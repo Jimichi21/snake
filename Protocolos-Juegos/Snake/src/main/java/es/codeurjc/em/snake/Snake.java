@@ -8,7 +8,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 public class Snake {
-//https://help.github.com/articles/fetching-a-remote/
+ //https://help.github.com/articles/fetching-a-remote/
 	private static final int DEFAULT_LENGTH = 5;
 
 	private final int id;
