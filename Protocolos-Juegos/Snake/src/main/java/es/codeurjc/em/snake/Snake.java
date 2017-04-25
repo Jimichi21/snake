@@ -27,7 +27,7 @@ public class Snake {
 		this.session = session;
 		this.hexColor = SnakeUtils.getRandomHexColor();
 		resetState();
-	}
+	}//Susa la chupas mal
 
 	private void resetState() {
 		this.direction = Direction.NONE;
