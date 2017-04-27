@@ -21,35 +21,36 @@ public class Snake {
 	private Direction direction;
 
 	private final WebSocketSession session;
-
+	
+	//atributos de la serpiente
 	public Snake(int id, WebSocketSession session) {
 		this.id = id;
 		this.session = session;
 		this.hexColor = SnakeUtils.getRandomHexColor();
 		resetState();
 	}
-
+	//restaura los valores de la serpiente (todo a 0)
 	private void resetState() {
 		this.direction = Direction.NONE;
 		this.head = SnakeUtils.getRandomLocation();
 		this.tail.clear();
 		this.length = DEFAULT_LENGTH;
 	}
-
+	//restaura los valores cuando muere la serpiente
 	private synchronized void kill() throws Exception {
 		resetState();
 		sendMessage("{\"type\": \"dead\"}");
 	}
-
+	//cada vez que "matas" a una serpiente tu tamaño aumenta
 	private synchronized void reward() throws Exception {
 		this.length++;
 		sendMessage("{\"type\": \"kill\"}");
 	}
-
+	//envio de mensajes
 	protected void sendMessage(String msg) throws Exception {
 		this.session.sendMessage(new TextMessage(msg));
 	}
-
+	//movimiento serpiente
 	public synchronized void update(Collection<Snake> snakes) throws Exception {
 
 		Location nextLocation = this.head.getAdjacentLocation(this.direction);
@@ -77,13 +78,13 @@ public class Snake {
 
 		handleCollisions(snakes);
 	}
-
+	//consulta de colisiones
 	private void handleCollisions(Collection<Snake> snakes) throws Exception {
 
 		for (Snake snake : snakes) {
-
+			//se chocan las cabezas 
 			boolean headCollision = this.id != snake.id && snake.getHead().equals(this.head);
-
+			//choca con la cola
 			boolean tailCollision = snake.getTail().contains(this.head);
 
 			if (headCollision || tailCollision) {
@@ -94,19 +95,19 @@ public class Snake {
 			}
 		}
 	}
-
+	//posicion de la cabeza
 	public synchronized Location getHead() {
 		return this.head;
 	}
-
+	//posicion de la cola
 	public synchronized Collection<Location> getTail() {
 		return this.tail;
 	}
-
+	//cambia la direccion de la serpiente
 	public synchronized void setDirection(Direction direction) {
 		this.direction = direction;
 	}
-
+	//devuelve 
 	public int getId() {
 		return this.id;
 	}
