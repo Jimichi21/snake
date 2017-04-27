@@ -18,11 +18,13 @@ public class Snake {
 	private int length = DEFAULT_LENGTH;
 
 	private final String hexColor;
+	private String Nombre_jugador;
 	private Direction direction;
 
 	private final WebSocketSession session;
 
-	public Snake(int id, WebSocketSession session) {
+	public Snake(int id, WebSocketSession session,String Nombre) {
+		this.Nombre_jugador=Nombre;
 		this.id = id;
 		this.session = session;
 		this.hexColor = SnakeUtils.getRandomHexColor();
