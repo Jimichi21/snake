@@ -12,6 +12,7 @@ public class SnakeGame {
 	private final static long TICK_DELAY = 100;
 
 	private ConcurrentHashMap<Integer, Snake> snakes = new ConcurrentHashMap<>();
+	
 	private AtomicInteger numSnakes = new AtomicInteger();
 
 	private ScheduledExecutorService scheduler;

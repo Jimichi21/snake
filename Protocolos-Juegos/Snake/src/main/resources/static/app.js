@@ -1,3 +1,15 @@
+
+var user;
+function action(){
+	
+	user = $("#texto").val()
+	
+	  console.log(user);
+	  document.getElementById('modal').style.display = "none"
+		  game();
+}
+
+function game(){
 var Console = {};
 
 Console.log = (function(message) {
@@ -150,6 +162,8 @@ class Game {
 			Console.log('Info: WebSocket connection opened.');
 			Console.log('Info: Press an arrow key to begin.');
 			
+			this.socket.send(user);
+			
 			this.startGameLoop();
 			
 			setInterval(() => this.socket.send('ping'), 5000);
@@ -193,3 +207,4 @@ class Game {
 game = new Game();
 
 game.initialize()
+}

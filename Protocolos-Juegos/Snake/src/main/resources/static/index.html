@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html>
+ <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="app.js"></script>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Multiplayer Snake</title>
@@ -12,6 +14,15 @@
 	<div id="console-container">
 		<div id="console"></div>
 	</div>
-	<script src="app.js"></script>
+	</div>
+	
+	<div id="modal">
+    <div class="modalconent">
+         <p>Introduzca su nombre de usuario</p>
+
+        <input id="texto"></input>
+        <button id="button" onclick="action()">Aceptar</button>
+    </div>
+</div>
 </body>
 </html>
