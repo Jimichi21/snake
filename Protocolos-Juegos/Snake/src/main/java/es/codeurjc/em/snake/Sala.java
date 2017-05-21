@@ -9,10 +9,10 @@ public class Sala {
 	String nombre;
 	int idCreador;
 	
-	Sala(int id, String nombre){
+	Sala(int id, String nombre, Snake creador){
 		this.id = id;
 		this.nombre = nombre;
-		//idCreador = creador.getId();
+		idCreador = creador.getId();
 	}
 	
 	boolean AñadirJugador(Snake jugador){

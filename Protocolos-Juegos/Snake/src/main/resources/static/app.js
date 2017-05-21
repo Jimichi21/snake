@@ -1,6 +1,7 @@
 
 var user;
 var sala;
+var aux1;
 
 window.onload = function() {
 	  document.getElementById('modal2').style.display = 'none';
@@ -18,6 +19,7 @@ function actionNombre(){
 }
 function actionCrear(){
 	sala = $("#texto2").val();
+	aux1 = {"type": "salaCrear", "sala": sala};
 	document.getElementById('modal2').style.display = "none";
 	game();
 	 
@@ -25,6 +27,7 @@ function actionCrear(){
 }
 function actionUnir(){
 	sala = $("#texto2").val();
+	aux1 = {"type": "salaUnir", "sala": sala};
 	document.getElementById('modal2').style.display = "none";
 	game();
 }
@@ -188,8 +191,8 @@ class Game {
 			var mens=JSON.stringify(aux);
 			this.socket.send(mens);
 			//enviamos el nombre de la sala al servidor
-			aux = {"type": "sala", "sala": sala};
-			mens=JSON.stringify(aux);
+			
+			mens=JSON.stringify(aux1);
 			this.socket.send(mens);
 			this.startGameLoop();
 			

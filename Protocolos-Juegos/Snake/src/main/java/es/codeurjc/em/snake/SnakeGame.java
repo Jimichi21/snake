@@ -32,10 +32,17 @@ public class SnakeGame {
 		}
 	}
 	
-	public void addSala(Sala sala){
+	public boolean addSala(Sala sala){
 		salas.put(sala.getId(), sala);
 		numSalas.getAndIncrement();
+		return true;
 	}
+	
+	//comprobar si la sala existe
+	public boolean comprobarSala(Sala sala){
+		return false;
+	}
+	
 	public Collection<Snake> getSnakes() {
 		return snakes.values();
 	}

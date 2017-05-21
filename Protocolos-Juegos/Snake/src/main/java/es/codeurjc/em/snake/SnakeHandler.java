@@ -27,7 +27,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 
 		id = snakeIds.getAndIncrement();
-		idSala = salasIds.getAndIncrement();
+		
 
 	}
 
@@ -79,18 +79,33 @@ public class SnakeHandler extends TextWebSocketHandler {
 			case "ping":
 			return;
 			
-			case "sala":
-				 	String nom = json.getString("sala");
-				    System.out.println(nom);
-				    sal = new Sala(id, nom);
-				    System.out.println("Nombre de sala "+nom);
-				    //session.getAttributes().put(SNAKE_ATT, s);
-
-				    snakeGame.addSala(sal);
-
-				    String msn = String.format("{\"type\": \"sala\",\"data\":\"%s\"}", nom);
+			case "salaCrear":
+					//si no existe la sala
+				    if(snakeGame.comprobarSala(sal)){
+				    	idSala = salasIds.getAndIncrement();
+					 	String nom = json.getString("sala");
+					    System.out.println(nom);
+					    sal = new Sala(id, nom,(Snake) session.getAttributes().get(SNAKE_ATT));
+					    System.out.println("Nombre de sala "+nom);
+					    
+					    snakeGame.addSala(sal);
+					    //session.getAttributes().put(SNAKE_ATT, s);
+					    //String msn = String.format("{\"type\": \"sala\",\"data\":\"%s\"}", nom);
+					    
+					    //snakeGame.broadcast(msn);
+				    }
+				    else{
+				    	return;
+				    }
+			case "salaUnir":
+				//si existe la sala
+				if(!snakeGame.addSala(sal)){
+			    	sal.AñadirJugador((Snake) session.getAttributes().get(SNAKE_ATT));
+			    }
+			    else{
+			    	return;
+			    }
 				    
-				    snakeGame.broadcast(msn);
 			
 			}	
 
