@@ -13,16 +13,21 @@ public class SnakeHandler extends TextWebSocketHandler {
 	private static final String SNAKE_ATT = "snake";
 
 	private AtomicInteger snakeIds = new AtomicInteger(0);
+	private AtomicInteger salasIds = new AtomicInteger(0);
 
 	private SnakeGame snakeGame = new SnakeGame();
     
 	Snake s;
+	Sala sal;
+	
+	int idSala;
 	int id;
 	String user_name;
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 
 		id = snakeIds.getAndIncrement();
+		idSala = salasIds.getAndIncrement();
 
 	}
 
@@ -74,11 +79,22 @@ public class SnakeHandler extends TextWebSocketHandler {
 			case "ping":
 			return;
 			
-			
+			case "sala":
+				 	String nom = json.getString("sala");
+				    System.out.println(nom);
+				    sal = new Sala(id, nom);
+				    System.out.println("Nombre de sala "+nom);
+				    //session.getAttributes().put(SNAKE_ATT, s);
+
+				    snakeGame.addSala(sal);
+
+				    String msn = String.format("{\"type\": \"sala\",\"data\":\"%s\"}", nom);
+				    
+				    snakeGame.broadcast(msn);
 			
 			}	
 
-System.out.println(payload);
+			System.out.println(payload);
 
 		} catch (Exception e) {
 			System.err.println("Exception processing message " + message.getPayload());
