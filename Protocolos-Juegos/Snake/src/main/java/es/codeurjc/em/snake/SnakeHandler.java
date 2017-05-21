@@ -103,8 +103,8 @@ System.out.println(payload);
 
 		snakeGame.removeSnake(s);
 
-		String msg = String.format("{\"type\": \"leave\", \"id\": %d}", s.getId());
-		
+		String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", s.getId(),s.getName());
+		System.out.println("-------------------------------->"+s.getId());
 		snakeGame.broadcast(msg);
 	}
 

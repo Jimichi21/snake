@@ -121,5 +121,8 @@ public class Snake {
 	public void setName(String name){
 		this.nombre_jugador=name;
 	}
+	public String getName(){
+		return this.nombre_jugador;
+	}
 	}
 

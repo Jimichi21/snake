@@ -177,6 +177,7 @@ class Game {
 
 		this.socket.onclose = () => {
 			Console.log('Info: WebSocket closed.');
+			
 			this.stopGameLoop();
 		}
 
@@ -191,14 +192,15 @@ class Game {
 			    }
 			    break;
 			   case 'join':
+				   Console.log('hola '+packet.data[0].nombre);
 			    for (var j = 0; j < packet.data.length; j++) {
-			     Console.log('hola '+packet.data[j].nombre);
+			     
 			     this.addSnake(packet.data[j].id, packet.data[j].color,packet.data[j].nombre);
 
 			    }
 			    break;
 			   case 'leave':
-			    Console.log(packet.data.nombre+'ha dejado la partida');
+			    Console.log(packet.nombre+' ha dejado la partida');
 			    this.removeSnake(packet.id);
 			    break;
 			   case 'dead':
