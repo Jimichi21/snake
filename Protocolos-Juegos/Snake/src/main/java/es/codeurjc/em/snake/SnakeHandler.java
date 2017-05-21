@@ -76,15 +76,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			
 			
 			
-			}
-			
-		
-			
-			
-
-			
-
-			
+			}	
 
 System.out.println(payload);
 

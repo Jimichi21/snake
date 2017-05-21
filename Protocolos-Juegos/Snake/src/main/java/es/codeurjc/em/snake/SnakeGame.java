@@ -13,7 +13,11 @@ public class SnakeGame {
 
 	private ConcurrentHashMap<Integer, Snake> snakes = new ConcurrentHashMap<>();
 	
+	private ConcurrentHashMap<Integer, Sala> salas = new ConcurrentHashMap<>();
+	
 	private AtomicInteger numSnakes = new AtomicInteger();
+	
+	private AtomicInteger numSalas = new AtomicInteger();
 
 	private ScheduledExecutorService scheduler;
 
@@ -27,7 +31,11 @@ public class SnakeGame {
 			startTimer();
 		}
 	}
-
+	
+	public void addSala(Sala sala){
+		salas.put(sala.getId(), sala);
+		numSalas.getAndIncrement();
+	}
 	public Collection<Snake> getSnakes() {
 		return snakes.values();
 	}
