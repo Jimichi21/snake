@@ -64,7 +64,9 @@ public class SnakeHandler extends TextWebSocketHandler {
 				
 			case "direction":
 				Snake s = (Snake) session.getAttributes().get(SNAKE_ATT);
-				Direction d = Direction.valueOf(json.getString("direction"));
+				String aux=json.getString("direction");
+				System.out.println("-------------------------------------->"+aux);
+				Direction d = Direction.valueOf(aux.toUpperCase());
 				s.setDirection(d);
 				return;
 			

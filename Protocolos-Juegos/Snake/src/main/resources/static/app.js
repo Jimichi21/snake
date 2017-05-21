@@ -97,7 +97,7 @@ class Game {
 
 	setDirection(direction) {
 		this.direction = direction;
-		var aux = '{"type": "direction", "direction": "'+this.direction+'"'+'}';
+		var aux = {"type":"direction","direction":direction};
 		var mens=JSON.stringify(aux);
 		this.socket.send(mens);
 		Console.log('Sent: Direction ' + direction);
@@ -164,13 +164,13 @@ class Game {
 			Console.log('Info: WebSocket connection opened.');
 			Console.log('Info: Press an arrow key to begin.');
 			
-			var aux = {'"type": "user", "user": "'+user+'"'};
+			var aux = {"type": "user", "user": user};
 			var mens=JSON.stringify(aux);
 			this.socket.send(mens);
 			
 			this.startGameLoop();
 			
-			var aux = '{"type": "ping"}';
+			var aux = {"type": "ping"};
 			var mens=JSON.stringify(aux);
 			setInterval(() => this.socket.send(mens), 5000);
 		}
