@@ -1,12 +1,32 @@
 
 var user;
-function action(){
+var sala;
+
+window.onload = function() {
+	  document.getElementById('modal2').style.display = 'none';
+	};
 	
-	user = $("#texto").val()
+function actionNombre(){
+	
+	user = $("#texto1").val()
 	
 	  console.log(user);
-	  document.getElementById('modal').style.display = "none"
-		  game();
+
+	  document.getElementById('modal1').style.display = "none";
+	  document.getElementById('modal2').style.display = "block";
+		  
+}
+function actionCrear(){
+	sala = $("#texto2").val();
+	document.getElementById('modal2').style.display = "none";
+	game();
+	 
+	
+}
+function actionUnir(){
+	sala = $("#texto2").val();
+	document.getElementById('modal2').style.display = "none";
+	game();
 }
 
 function game(){
@@ -163,11 +183,14 @@ class Game {
 			// Socket open.. start the game loop.
 			Console.log('Info: WebSocket connection opened.');
 			Console.log('Info: Press an arrow key to begin.');
-			
+			//enviamos el usuario al servidor
 			var aux = {"type": "user", "user": user};
 			var mens=JSON.stringify(aux);
 			this.socket.send(mens);
-			
+			//enviamos el nombre de la sala al servidor
+			aux = {"type": "sala", "sala": sala};
+			mens=JSON.stringify(aux);
+			this.socket.send(mens);
 			this.startGameLoop();
 			
 			var aux = {"type": "ping"};
