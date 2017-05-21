@@ -18,14 +18,14 @@ public class Snake {
 	private int length = DEFAULT_LENGTH;
 
 	private final String hexColor;
-	private String Nombre_jugador;
+	private String nombre_jugador;
 	private Direction direction;
 
 	private final WebSocketSession session;
 	
 	//atributos de la serpiente
-	public Snake(int id, WebSocketSession session) {
-		
+	public Snake(int id, WebSocketSession session,String nombre) {
+		this.nombre_jugador=nombre;
 		this.id = id;
 		this.session = session;
 		this.hexColor = SnakeUtils.getRandomHexColor();
@@ -119,7 +119,7 @@ public class Snake {
 	}
 	
 	public void setName(String name){
-		this.Nombre_jugador=name;
+		this.nombre_jugador=name;
 	}
 	}
 

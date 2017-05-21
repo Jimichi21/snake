@@ -6,6 +6,7 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import org.json.JSONObject;
 
 public class SnakeHandler extends TextWebSocketHandler {
 
@@ -15,6 +16,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 
 	private SnakeGame snakeGame = new SnakeGame();
     
+	Snake s;
 	int id;
 	String user_name;
 	@Override
@@ -22,21 +24,6 @@ public class SnakeHandler extends TextWebSocketHandler {
 
 		id = snakeIds.getAndIncrement();
 
-		Snake s = new Snake(id, session);
-		System.out.println("Nombre de usuario "+user_name);
-		session.getAttributes().put(SNAKE_ATT, s);
-
-		snakeGame.addSnake(s);
-
-		StringBuilder sb = new StringBuilder();
-		for (Snake snake : snakeGame.getSnakes()) {			
-			sb.append(String.format("{\"id\": %d, \"color\": \"%s\"}", snake.getId(), snake.getHexColor()));
-			sb.append(',');
-		}
-		sb.deleteCharAt(sb.length()-1);
-		String msg = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
-		
-		snakeGame.broadcast(msg);
 	}
 
 	@Override
@@ -46,19 +33,57 @@ public class SnakeHandler extends TextWebSocketHandler {
 
 			String payload = message.getPayload();
 			
+			JSONObject json = new JSONObject(payload);
 			
-			if (payload.equals("ping")) {
+			String tipo=json.getString("type");
+			
+			switch (tipo){
+			
+			case "user":
+			
+				
+			    String nombre = json.getString("user");
+			    System.out.println(nombre);
+			    s = new Snake(id, session, nombre);
+			    System.out.println("Nombre de usuario "+nombre);
+			    session.getAttributes().put(SNAKE_ATT, s);
+
+			    snakeGame.addSnake(s);
+
+			    StringBuilder sb = new StringBuilder();
+			    for (Snake snake : snakeGame.getSnakes()) {   
+			     sb.append(String.format("{\"id\": %d, \"color\": \"%s\",\"nombre\":\"%s\"}", snake.getId(), snake.getHexColor(),nombre));
+			     sb.append(',');
+			    }
+			    sb.deleteCharAt(sb.length()-1);
+			    String msg = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
+			    
+			    snakeGame.broadcast(msg);
+				
+			break;
+				
+			case "direction":
+				Snake s = (Snake) session.getAttributes().get(SNAKE_ATT);
+				Direction d = Direction.valueOf(json.getString("direction"));
+				s.setDirection(d);
 				return;
+			
+			
+			case "ping":
+			return;
+			
+			
+			
 			}
+			
+		
 			
 			
 
-			Snake s = (Snake) session.getAttributes().get(SNAKE_ATT);
-if(payload.equals("east")||payload.equals("west")||payload.equals("north")||payload.equals("south")){
-			Direction d = Direction.valueOf(payload.toUpperCase());
-			s.setDirection(d);
-			return;
-}
+			
+
+			
+
 System.out.println(payload);
 
 		} catch (Exception e) {

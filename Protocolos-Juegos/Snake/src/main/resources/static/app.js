@@ -97,7 +97,9 @@ class Game {
 
 	setDirection(direction) {
 		this.direction = direction;
-		this.socket.send(direction);
+		var aux = '{"type": "direction", "direction": "'+this.direction+'"'+'}';
+		var mens=JSON.stringify(aux);
+		this.socket.send(mens);
 		Console.log('Sent: Direction ' + direction);
 	}
 
@@ -162,11 +164,15 @@ class Game {
 			Console.log('Info: WebSocket connection opened.');
 			Console.log('Info: Press an arrow key to begin.');
 			
-			this.socket.send(user);
+			var aux = {'"type": "user", "user": "'+user+'"'};
+			var mens=JSON.stringify(aux);
+			this.socket.send(mens);
 			
 			this.startGameLoop();
 			
-			setInterval(() => this.socket.send('ping'), 5000);
+			var aux = '{"type": "ping"}';
+			var mens=JSON.stringify(aux);
+			setInterval(() => this.socket.send(mens), 5000);
 		}
 
 		this.socket.onclose = () => {
@@ -179,27 +185,30 @@ class Game {
 			var packet = JSON.parse(message.data);
 			
 			switch (packet.type) {
-			case 'update':
-				for (var i = 0; i < packet.data.length; i++) {
-					this.updateSnake(packet.data[i].id, packet.data[i].body);
-				}
-				break;
-			case 'join':
-				for (var j = 0; j < packet.data.length; j++) {
-					this.addSnake(packet.data[j].id, packet.data[j].color);
-				}
-				break;
-			case 'leave':
-				this.removeSnake(packet.id);
-				break;
-			case 'dead':
-				Console.log('Info: Your snake is dead, bad luck!');
-				this.direction = 'none';
-				break;
-			case 'kill':
-				Console.log('Info: Head shot!');
-				break;
-			}
+			   case 'update':
+			    for (var i = 0; i < packet.data.length; i++) {
+			     this.updateSnake(packet.data[i].id, packet.data[i].body);
+			    }
+			    break;
+			   case 'join':
+			    for (var j = 0; j < packet.data.length; j++) {
+			     Console.log('hola '+packet.data[j].nombre);
+			     this.addSnake(packet.data[j].id, packet.data[j].color,packet.data[j].nombre);
+
+			    }
+			    break;
+			   case 'leave':
+			    Console.log(packet.data.nombre+'ha dejado la partida');
+			    this.removeSnake(packet.id);
+			    break;
+			   case 'dead':
+			    Console.log('Info: Your snake is dead, bad luck!');
+			    this.direction = 'none';
+			    break;
+			   case 'kill':
+			    Console.log('Info: Head shot!');
+			    break;
+			   }
 		}
 	}
 }
