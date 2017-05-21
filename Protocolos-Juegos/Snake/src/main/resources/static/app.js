@@ -6,7 +6,7 @@ window.onload = function() {
 	  document.getElementById('modal2').style.display = 'none';
 	};
 	
-function action1(){
+function actionNombre(){
 	
 	user = $("#texto1").val()
 	
