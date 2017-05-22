@@ -9,10 +9,11 @@ public class Sala {
 	String nombre;
 	int idCreador;
 	
-	Sala(int id, String nombre, Snake creador){
+	Sala(int id, String nombre){
 		this.id = id;
 		this.nombre = nombre;
-		idCreador = creador.getId();
+	
+		
 	}
 	
 	boolean AñadirJugador(Snake jugador){
@@ -35,5 +36,8 @@ public class Sala {
 	}
 	String getName(){
 		return this.nombre;
+	}
+	ConcurrentHashMap<Integer,Snake> getLista(){
+		return this.snakes;
 	}
 }

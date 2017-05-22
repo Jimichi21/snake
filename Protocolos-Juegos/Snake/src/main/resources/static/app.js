@@ -1,8 +1,7 @@
 
 var user;
 var sala;
-var aux1;
-
+var comandoSala;
 window.onload = function() {
 	  document.getElementById('modal2').style.display = 'none';
 	};
@@ -19,15 +18,16 @@ function actionNombre(){
 }
 function actionCrear(){
 	sala = $("#texto2").val();
-	aux1 = {"type": "salaCrear", "sala": sala};
+	comandoSala="Crear";
 	document.getElementById('modal2').style.display = "none";
+	
 	game();
 	 
 	
 }
 function actionUnir(){
 	sala = $("#texto2").val();
-	aux1 = {"type": "salaUnir", "sala": sala};
+	comandoSala="Unir";
 	document.getElementById('modal2').style.display = "none";
 	game();
 }
@@ -186,14 +186,15 @@ class Game {
 			// Socket open.. start the game loop.
 			Console.log('Info: WebSocket connection opened.');
 			Console.log('Info: Press an arrow key to begin.');
+			
+			
+			
+			
 			//enviamos el usuario al servidor
-			var aux = {"type": "user", "user": user};
+			var aux = {"type": "user", "user": user, "ComandoSala":comandoSala,"Sala":sala};
 			var mens=JSON.stringify(aux);
 			this.socket.send(mens);
-			//enviamos el nombre de la sala al servidor
 			
-			mens=JSON.stringify(aux1);
-			this.socket.send(mens);
 			this.startGameLoop();
 			
 			var aux = {"type": "ping"};
@@ -217,10 +218,10 @@ class Game {
 			    }
 			    break;
 			   case 'join':
+				   
 			    for (var j = 0; j < packet.data.length; j++) {
 			     Console.log('hola '+packet.data[j].nombre);
 			     this.addSnake(packet.data[j].id, packet.data[j].color,packet.data[j].nombre);
-
 			    }
 			    break;
 			   case 'leave':

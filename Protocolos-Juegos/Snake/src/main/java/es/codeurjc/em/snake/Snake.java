@@ -128,7 +128,7 @@ public class Snake {
 	public void setSala(Sala s){
 		this.sala=s;
 	}
-	public Sala getSaka(){
+	public Sala getSala(){
 		return this.sala;
 	}
 	}

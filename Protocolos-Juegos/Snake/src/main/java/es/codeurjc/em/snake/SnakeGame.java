@@ -23,12 +23,15 @@ public class SnakeGame {
 
 	public void addSnake(Snake snake) {
 
-		snakes.put(snake.getId(), snake);
-
+		
+		
+		
 		int count = numSnakes.getAndIncrement();
 
 		if (count == 0) {
-			startTimer();
+		
+			
+			startTimer(snake.getSala());
 		}
 	}
 	
@@ -69,28 +72,29 @@ public class SnakeGame {
 		}
 	}
 
-	private void tick() {
+	private void tick(Sala sala) {
 
 		try {
 
-			for (Snake snake : getSnakes()) {
-				snake.update(getSnakes());
-			}
+			   for (Snake snake : sala.getLista().values()) {
+			    snake.update(sala.getLista().values());
+			   }
 
-			StringBuilder sb = new StringBuilder();
-			for (Snake snake : getSnakes()) {
-				sb.append(getLocationsJson(snake));
-				sb.append(',');
-			}
-			sb.deleteCharAt(sb.length()-1);
-			String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
+			   StringBuilder sb = new StringBuilder();
+			   for (Snake snake : sala.getLista().values()) {
+				  
+			    sb.append(getLocationsJson(snake));
+			    sb.append(',');
+			   }
+			   sb.deleteCharAt(sb.length()-1);
+			   String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
 
-			broadcast(msg);
+			   broadcast(msg,sala);
 
-		} catch (Throwable ex) {
-			System.err.println("Exception processing tick()");
-			ex.printStackTrace(System.err);
-		}
+			  } catch (Throwable ex) {
+			   System.err.println("Exception processing tick()");
+			   ex.printStackTrace(System.err);
+			  }
 	}
 
 	private String getLocationsJson(Snake snake) {
@@ -108,11 +112,14 @@ public class SnakeGame {
 		}
 	}
 
-	public void broadcast(String message) throws Exception {
+	public void broadcast(String message, Sala sala) throws Exception {
 
-		for (Snake snake : getSnakes()) {
+		
+		
+		
+		for (Snake snake : sala.getLista().values()) {
 			try {
-
+				 System.out.println("------------->"+snake.getName());
 				System.out.println("Sending message " + message + " to " + snake.getId());
 				snake.sendMessage(message);
 
@@ -124,9 +131,9 @@ public class SnakeGame {
 		}
 	}
 
-	public void startTimer() {
+	public void startTimer(Sala sala) {
 		scheduler = Executors.newScheduledThreadPool(1);
-		scheduler.scheduleAtFixedRate(() -> tick(), TICK_DELAY, TICK_DELAY, TimeUnit.MILLISECONDS);
+		scheduler.scheduleAtFixedRate(() -> tick(sala), TICK_DELAY, TICK_DELAY, TimeUnit.MILLISECONDS);
 	}
 
 	public void stopTimer() {

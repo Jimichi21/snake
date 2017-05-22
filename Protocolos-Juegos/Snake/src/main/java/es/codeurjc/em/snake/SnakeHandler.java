@@ -51,42 +51,77 @@ public class SnakeHandler extends TextWebSocketHandler {
 			    System.out.println(nombre);
 			    s = new Snake(id, session, nombre);
 			    System.out.println("Nombre de usuario "+nombre);
+			    
+			    
+			    if(json.getString("ComandoSala").equals("Crear")){
+			    	
+			    	if(!snakeGame.comprobarSala(json.getString("Sala"))){
+				    	idSala = salasIds.getAndIncrement();
+					 	String nom = json.getString("Sala");
+					    System.out.println(nom);
+					   
+					    sal = new Sala(id, nom);
+					    sal.AñadirJugador(s);
+					    s.setSala(sal);
+					    System.out.println("Nombre de sala "+nom);
+					    
+					    snakeGame.addSala(sal);
+			    	
+			    	
+			    	
+			    }else{
+			    	return;
+			    	}
+			    }else{
+			    	
+			    	//si existe la sala (Se tiene que devolver la sala de la lista de salas)
+					if(snakeGame.comprobarSala(json.getString("Sala"))){
+						
+						sal.AñadirJugador(s);
+						s.setSala(sal);
+				    
+				    }
+				    else{
+				    	return;
+				    }
+			    	
+			    }
 			    session.getAttributes().put(SNAKE_ATT, s);
-
 			    snakeGame.addSnake(s);
 
 			    StringBuilder sb = new StringBuilder();
-			    for (Snake snake : snakeGame.getSnakes()) {   
+			    for (Snake snake : sal.getLista().values()) {   
 			     sb.append(String.format("{\"id\": %d, \"color\": \"%s\",\"nombre\":\"%s\"}", snake.getId(), snake.getHexColor(),nombre));
 			     sb.append(',');
 			    }
 			    sb.deleteCharAt(sb.length()-1);
 			    String msg = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
 			    
-			    snakeGame.broadcast(msg);
+			    snakeGame.broadcast(msg, s.getSala());
 				
 			break;
 				
 			case "direction":
-				Snake s = (Snake) session.getAttributes().get(SNAKE_ATT);
+				Snake sn = (Snake) session.getAttributes().get(SNAKE_ATT);
 				String aux=json.getString("direction");
+				System.out.println("------------------------------------------>"+aux);
 				Direction d = Direction.valueOf(aux.toUpperCase());
-				s.setDirection(d);
+				sn.setDirection(d);
 				return;
 			
 			
 			case "ping":
 			return;
-			
+			/*
 			case "salaCrear":
 					//si no existe la sala (Se tiene que comprobar por nombre si existe no por objeto)
 				    if(!snakeGame.comprobarSala(json.getString("sala"))){
 				    	idSala = salasIds.getAndIncrement();
 					 	String nom = json.getString("sala");
 					    System.out.println(nom);
-					    Snake sn=(Snake) session.getAttributes().get(SNAKE_ATT);
-					    sal = new Sala(id, nom,sn);
-					    sn.setSala(sal);
+					    Snake ss=(Snake) session.getAttributes().get(SNAKE_ATT);
+					    sal = new Sala(id, nom,ss);
+					    ss.setSala(sal);
 					    System.out.println("Nombre de sala "+nom);
 					    
 					    snakeGame.addSala(sal);
@@ -102,12 +137,13 @@ public class SnakeHandler extends TextWebSocketHandler {
 				//si existe la sala (Se tiene que devolver la sala de la lista de salas)
 				if(snakeGame.comprobarSala(json.getString("sala"))){
 					Snake sn=(Snake) session.getAttributes().get(SNAKE_ATT);
+					sal.AñadirJugador(sn);
 					sn.setSala(sal);
-			    	sal.AñadirJugador(sn);
+			    
 			    }
 			    else{
 			    	return;
-			    }
+			    }*/
 				    
 			
 			}	
@@ -131,7 +167,8 @@ public class SnakeHandler extends TextWebSocketHandler {
 
 		String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", s.getId(),s.getName());
 		System.out.println("-------------------------------->"+s.getId());
-		snakeGame.broadcast(msg);
+		Snake sn=(Snake) session.getAttributes().get(SNAKE_ATT);
+	    snakeGame.broadcast(msg, sn.getSala());
 	}
 
 }
