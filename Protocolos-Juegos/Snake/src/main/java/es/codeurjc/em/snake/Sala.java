@@ -27,10 +27,13 @@ public class Sala {
 	}
 	
 	boolean Empezar(){
-		return contador>2;
+		return contador>=2;
 	}
 	
 	int getId(){
-		return id;
+		return this.id;
+	}
+	String getName(){
+		return this.nombre;
 	}
 }

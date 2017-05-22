@@ -70,7 +70,6 @@ public class SnakeHandler extends TextWebSocketHandler {
 			case "direction":
 				Snake s = (Snake) session.getAttributes().get(SNAKE_ATT);
 				String aux=json.getString("direction");
-				System.out.println("-------------------------------------->"+aux);
 				Direction d = Direction.valueOf(aux.toUpperCase());
 				s.setDirection(d);
 				return;
@@ -80,12 +79,14 @@ public class SnakeHandler extends TextWebSocketHandler {
 			return;
 			
 			case "salaCrear":
-					//si no existe la sala
-				    if(snakeGame.comprobarSala(sal)){
+					//si no existe la sala (Se tiene que comprobar por nombre si existe no por objeto)
+				    if(!snakeGame.comprobarSala(json.getString("sala"))){
 				    	idSala = salasIds.getAndIncrement();
 					 	String nom = json.getString("sala");
 					    System.out.println(nom);
-					    sal = new Sala(id, nom,(Snake) session.getAttributes().get(SNAKE_ATT));
+					    Snake sn=(Snake) session.getAttributes().get(SNAKE_ATT);
+					    sal = new Sala(id, nom,sn);
+					    sn.setSala(sal);
 					    System.out.println("Nombre de sala "+nom);
 					    
 					    snakeGame.addSala(sal);
@@ -98,9 +99,11 @@ public class SnakeHandler extends TextWebSocketHandler {
 				    	return;
 				    }
 			case "salaUnir":
-				//si existe la sala
-				if(!snakeGame.addSala(sal)){
-			    	sal.AñadirJugador((Snake) session.getAttributes().get(SNAKE_ATT));
+				//si existe la sala (Se tiene que devolver la sala de la lista de salas)
+				if(snakeGame.comprobarSala(json.getString("sala"))){
+					Snake sn=(Snake) session.getAttributes().get(SNAKE_ATT);
+					sn.setSala(sal);
+			    	sal.AñadirJugador(sn);
 			    }
 			    else{
 			    	return;

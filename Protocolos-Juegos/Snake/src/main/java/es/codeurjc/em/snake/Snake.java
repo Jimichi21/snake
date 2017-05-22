@@ -20,6 +20,7 @@ public class Snake {
 	private final String hexColor;
 	private String nombre_jugador;
 	private Direction direction;
+	private Sala sala;
 
 	private final WebSocketSession session;
 	
@@ -123,6 +124,12 @@ public class Snake {
 	}
 	public String getName(){
 		return this.nombre_jugador;
+	}
+	public void setSala(Sala s){
+		this.sala=s;
+	}
+	public Sala getSaka(){
+		return this.sala;
 	}
 	}
 

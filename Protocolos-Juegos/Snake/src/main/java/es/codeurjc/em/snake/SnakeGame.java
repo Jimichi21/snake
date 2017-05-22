@@ -6,7 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
+import java.util.Collection.*;
 public class SnakeGame {
 
 	private final static long TICK_DELAY = 100;
@@ -35,11 +35,22 @@ public class SnakeGame {
 	public boolean addSala(Sala sala){
 		salas.put(sala.getId(), sala);
 		numSalas.getAndIncrement();
+		
+		
 		return true;
 	}
 	
-	//comprobar si la sala existe
-	public boolean comprobarSala(Sala sala){
+	//comprobar si la sala existe true si existe false si no
+	public boolean comprobarSala(String sala){
+		
+		for(ConcurrentHashMap.Entry<Integer, Sala> entry : salas.entrySet()) {
+		    String key = entry.getValue().getName();
+		   if(sala.equals(key)){
+			   return true;
+		   }
+		
+		}
+		
 		return false;
 	}
 	
