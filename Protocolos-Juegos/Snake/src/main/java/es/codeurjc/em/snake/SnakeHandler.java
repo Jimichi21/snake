@@ -112,6 +112,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			
 			case "ping":
 			return;
+
 			/*
 			case "salaCrear":
 					//si no existe la sala (Se tiene que comprobar por nombre si existe no por objeto)
@@ -146,6 +147,13 @@ public class SnakeHandler extends TextWebSocketHandler {
 			    }*/
 				    
 			
+		
+			case "cancelar":
+				    System.out.println("-------------------------------\n---------------------\n cancelar");
+			
+			msg="{\"type\": \"cancelar\",\"info\": \"Espera cancelada\"}";
+	    	s.sendMessage(msg);
+
 			}	
 
 			System.out.println(payload);

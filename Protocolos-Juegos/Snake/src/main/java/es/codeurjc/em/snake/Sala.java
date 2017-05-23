@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Sala {
 	int id; //identificador de la sala
 	private ConcurrentHashMap<Integer, Snake> snakes = new ConcurrentHashMap<>();
+	private ConcurrentHashMap<Integer, Snake> snakesEspera = new ConcurrentHashMap<>();
 	int contador = 1;//numero de jugadores en la sala
 	String nombre;
 	int idCreador;
@@ -15,7 +16,11 @@ public class Sala {
 	
 		
 	}
-	
+	void EliminarJugador(Snake jugador){
+		snakes.remove(Integer.valueOf(jugador.getId()));
+		contador--;
+		
+	}
 	boolean AñadirJugador(Snake jugador){
 		if(contador <= 4){
 			snakes.put(jugador.getId(), jugador);
@@ -39,5 +44,11 @@ public class Sala {
 	}
 	ConcurrentHashMap<Integer,Snake> getLista(){
 		return this.snakes;
+	}
+	ConcurrentHashMap<Integer,Snake> getEspera(){
+		return this.snakesEspera;
+	}
+	boolean SerpientesEsperando(){
+		return snakesEspera.isEmpty();
 	}
 }

@@ -22,16 +22,22 @@ public class SnakeGame {
 	private ScheduledExecutorService scheduler;
 
 	public void addSnake(Snake snake) {
+		/*si no hay serpientes antes se inicia el juego*/
+		/*int count = numSnakes.getAndIncrement();
 
-		
-		
-		
-		int count = numSnakes.getAndIncrement();
-
-		if (count == 0) {
-		
-			
+		if (count == 0) {		
 			startTimer(snake.getSala());
+		}*/
+		
+		/*si no hay serpientes en la sala crea el juego*/
+		/*hasta que no haya 4 jugadores en la sala de la serpiente no arranca el juego*/
+		/*cuando haya 2 jugadores en la sala el creador puede decidir iniciar la partida*/
+		int aux = snake.getSala().contador;
+		if(aux == 4){
+			startTimer(snake.getSala());
+		}
+		if(aux>=2){
+			//mandar mensaje al creador de la sala por si quiere iniciar la partida
 		}
 	}
 	
@@ -62,12 +68,35 @@ public class SnakeGame {
 	}
 
 	public void removeSnake(Snake snake) {
-
-		snakes.remove(Integer.valueOf(snake.getId()));
+		/*se elimina la serpiente de la lista de serpientes del juego
+		 * se decrementa el numero de serpientes
+		 * si es la ultima serpiente se para el juego*/
+		/*snakes.remove(Integer.valueOf(snake.getId()));
 
 		int count = numSnakes.decrementAndGet();
 
 		if (count == 0) {
+			stopTimer();
+		}*/
+		/*se elimina la serpiente de la lista de serpientes del juego
+		 * se elimina la serpiente de la lista de serpientes de la sala
+		 * si es la ultima serpiente de la sala se elimina la sala
+		 * si es la ultima serpiente de la lista de serpientes se termina el juego*/
+		snakes.remove(Integer.valueOf(snake.getId()));
+		snake.getSala().EliminarJugador(snake);
+		int aux = snake.getSala().contador;
+		if(aux == 0){
+			//se elimina la sala
+			removeSala(snake.getSala());
+		}
+		
+	}
+	
+	void removeSala(Sala sala){
+		salas.remove(sala.getId());
+		int count = numSalas.decrementAndGet();
+		if(count==0){
+			//cerrar juego
 			stopTimer();
 		}
 	}

@@ -2,6 +2,8 @@
 var user;
 var sala;
 var comandoSala;
+
+
 window.onload = function() {
 	  document.getElementById('modal2').style.display = 'none';
 	};
@@ -13,26 +15,35 @@ function actionNombre(){
 	  console.log(user);
 
 	  document.getElementById('modal1').style.display = "none";
+	  document.getElementById('button4').style.display = "none";
 	  document.getElementById('modal2').style.display = "block";
 		  
 }
 function actionCrear(){
 	sala = $("#texto2").val();
 	comandoSala="Crear";
-	document.getElementById('modal2').style.display = "none";
 	
-	game();
+	
+	juego();
 	 
 	
 }
 function actionUnir(){
 	sala = $("#texto2").val();
 	comandoSala="Unir";
-	document.getElementById('modal2').style.display = "none";
-	game();
+
+	
+	juego();
 }
 
-function game(){
+function actionCancelar(){
+	var mensaje={"type": "cancelar"};
+	game.enviar(mensaje);
+}
+
+
+	
+	
 var Console = {};
 
 Console.log = (function(message) {
@@ -47,7 +58,7 @@ Console.log = (function(message) {
 	console.scrollTop = console.scrollHeight;
 });
 
-let game;
+
 
 class Snake {
 
@@ -66,11 +77,16 @@ class Snake {
 }
 
 class Game {
-
-	constructor(){
 	
-		this.fps = 30;
+	enviar(mens){
+		var pack = JSON.stringify(mens);
+		this.socket.send(pack);
+	
+	}
+	
+	constructor(){
 		this.socket = null;
+		this.fps = 30;
 		this.nextFrame = null;
 		this.interval = null;
 		this.direction = 'none';
@@ -238,9 +254,13 @@ class Game {
 			   }
 		}
 	}
+		
+}
+let game=new Game();
+
+
+function juego(){
+game.initialize();
+
 }
 
-game = new Game();
-
-game.initialize()
-}
