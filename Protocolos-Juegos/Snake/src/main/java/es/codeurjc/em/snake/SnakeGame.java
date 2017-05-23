@@ -31,7 +31,7 @@ public class SnakeGame {
 		if (count == 0) {
 		
 			
-			startTimer();
+			startTimer(snake.getSala());
 		}
 	}
 	
@@ -72,17 +72,16 @@ public class SnakeGame {
 		}
 	}
 
-	private void tick() {
-		
-		for(Sala sal : salas.values()){
+	private void tick(Sala sala) {
+
 		try {
-				
-			   for (Snake snake : sal.getLista().values()) {
-			    snake.update(sal.getLista().values());
+
+			   for (Snake snake : sala.getLista().values()) {
+			    snake.update(sala.getLista().values());
 			   }
 
 			   StringBuilder sb = new StringBuilder();
-			   for (Snake snake : sal.getLista().values()) {
+			   for (Snake snake : sala.getLista().values()) {
 				  
 			    sb.append(getLocationsJson(snake));
 			    sb.append(',');
@@ -90,14 +89,12 @@ public class SnakeGame {
 			   sb.deleteCharAt(sb.length()-1);
 			   String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
 
-			   broadcast(msg,sal);
+			   broadcast(msg,sala);
 
-		}catch (Throwable ex) {
+			  } catch (Throwable ex) {
 			   System.err.println("Exception processing tick()");
 			   ex.printStackTrace(System.err);
 			  }
-				}
-			  
 	}
 
 	private String getLocationsJson(Snake snake) {
@@ -134,9 +131,9 @@ public class SnakeGame {
 		}
 	}
 
-	public void startTimer() {
+	public void startTimer(Sala sala) {
 		scheduler = Executors.newScheduledThreadPool(1);
-		scheduler.scheduleAtFixedRate(() -> tick(), TICK_DELAY, TICK_DELAY, TimeUnit.MILLISECONDS);
+		scheduler.scheduleAtFixedRate(() -> tick(sala), TICK_DELAY, TICK_DELAY, TimeUnit.MILLISECONDS);
 	}
 
 	public void stopTimer() {
@@ -144,18 +141,4 @@ public class SnakeGame {
 			scheduler.shutdown();
 		}
 	}
-	
-	public Sala getSala(String nombre){
-		Sala s=null;
-	
-		for(ConcurrentHashMap.Entry<Integer, Sala> entry : salas.entrySet()) {
-		    String key = entry.getValue().getName();
-		   if(nombre.equals(key)){
-			   s=entry.getValue();
-			   return s; 
-		   }
-		
-	}
-		return s;
-}
 }

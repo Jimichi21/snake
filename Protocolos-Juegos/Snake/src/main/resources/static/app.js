@@ -13,14 +13,13 @@ function actionNombre(){
 	  console.log(user);
 
 	  document.getElementById('modal1').style.display = "none";
-	  document.getElementById('button4').style.display = "none";
 	  document.getElementById('modal2').style.display = "block";
 		  
 }
 function actionCrear(){
 	sala = $("#texto2").val();
 	comandoSala="Crear";
-	
+	document.getElementById('modal2').style.display = "none";
 	
 	game();
 	 
@@ -29,14 +28,8 @@ function actionCrear(){
 function actionUnir(){
 	sala = $("#texto2").val();
 	comandoSala="Unir";
-	
+	document.getElementById('modal2').style.display = "none";
 	game();
-}
-
-function actionCancelar(){
-	var aux = {"type":"cancelar"};
-	var mens=JSON.stringify(aux);
-	this.socket.send(mens);
 }
 
 function game(){
@@ -215,8 +208,7 @@ class Game {
 		}
 
 		this.socket.onmessage = (message) => {
-			
-			
+
 			var packet = JSON.parse(message.data);
 			
 			switch (packet.type) {
@@ -227,9 +219,8 @@ class Game {
 			    break;
 			   case 'join':
 				   
-				   Console.log(packet.data[0].nombre+" Ha entrado en la sala");
 			    for (var j = 0; j < packet.data.length; j++) {
-			     
+			     Console.log('hola '+packet.data[j].nombre);
 			     this.addSnake(packet.data[j].id, packet.data[j].color,packet.data[j].nombre);
 			    }
 			    break;
@@ -244,42 +235,12 @@ class Game {
 			   case 'kill':
 			    Console.log('Info: Head shot!');
 			    break;
-			    
-			   case 'Okcrear': 
-				   if(packet.data==='Ok'){
-					   Console.log('Sala '+sala+" creada con éxito"); 
-					   document.getElementById('modal2').style.display = "none";
-					   
-				   }else{
-					   Console.log('Error, la sala '+sala+" ya existe"); 
-				   }
-				   break;
-				   
-			   case 'Okunir': 
-				   if(packet.data==='Ok'){
-					   
-					   document.getElementById('modal2').style.display = "none";
-					   
-				   }else{
-					   Console.log(packet.info); 
-					   if(packet.info==="Error, Sala llena esperando 5 segundos"){
-						   
-						   document.getElementById('button4').style.display = "block";
-					   }
-				   }
-				   break;
-			   
-			   case "cancelar" :
-				   Console.log(packet.info);
-				   document.getElementById('button4').style.display = "none";
-			}
+			   }
 		}
 	}
 }
 
-
 game = new Game();
-game.initialize();
 
-
+game.initialize()
 }
