@@ -46,7 +46,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			
 			case "user":
 			
-				
+				String msg; //Tendrá el mensaje de confirmación o no de que la sala existe o no
 			    String nombre = json.getString("user");
 			    System.out.println(nombre);
 			    s = new Snake(id, session, nombre);
@@ -55,6 +55,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			    
 			    if(json.getString("ComandoSala").equals("Crear")){
 			    	
+			    	//Si no existe la sala la crea
 			    	if(!snakeGame.comprobarSala(json.getString("Sala"))){
 				    	idSala = salasIds.getAndIncrement();
 					 	String nom = json.getString("Sala");
@@ -67,9 +68,13 @@ public class SnakeHandler extends TextWebSocketHandler {
 					    
 					    snakeGame.addSala(sal);
 			    	
-			    	
+					    msg="{\"type\": \"Okcrear\",\"data\":\"Ok\"}";
+					    s.sendMessage(msg);
 			    	
 			    }else{
+			    	
+			    	msg="{\"type\": \"Okcrear\",\"data\":\"NotOk\"}";
+			    	s.sendMessage(msg);
 			    	return;
 			    	}
 			    }else{
@@ -77,11 +82,27 @@ public class SnakeHandler extends TextWebSocketHandler {
 			    	//si existe la sala (Se tiene que devolver la sala de la lista de salas)
 					if(snakeGame.comprobarSala(json.getString("Sala"))){
 						
+						sal=snakeGame.getSala(json.getString("Sala"));
+						
+						
+						if(sal.comprobarJugador()){
 						sal.AñadirJugador(s);
 						s.setSala(sal);
 				    
+						msg="{\"type\": \"Okunir\",\"data\":\"Ok\"}";
+				    	s.sendMessage(msg);
+						}else{
+							msg="{\"type\": \"Okunir\",\"data\":\"NotOk\",\"info\":\"Error, Sala llena esperando 5 segundos\"}";
+							s.sendMessage(msg);
+							 wait(5000);
+							
+						}
 				    }
 				    else{
+				    	
+				    	msg="{\"type\": \"Okunir\",\"data\":\"NotOk\",\"info\":\"Error, la sala introducida no existe\"}";
+				    	s.sendMessage(msg);
+				    	
 				    	return;
 				    }
 			    	
@@ -95,16 +116,15 @@ public class SnakeHandler extends TextWebSocketHandler {
 			     sb.append(',');
 			    }
 			    sb.deleteCharAt(sb.length()-1);
-			    String msg = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
+			    String msg2 = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
 			    
-			    snakeGame.broadcast(msg, s.getSala());
+			    snakeGame.broadcast(msg2, s.getSala());
 				
 			break;
 				
 			case "direction":
 				Snake sn = (Snake) session.getAttributes().get(SNAKE_ATT);
 				String aux=json.getString("direction");
-				System.out.println("------------------------------------------>"+aux);
 				Direction d = Direction.valueOf(aux.toUpperCase());
 				sn.setDirection(d);
 				return;
@@ -112,40 +132,12 @@ public class SnakeHandler extends TextWebSocketHandler {
 			
 			case "ping":
 			return;
-			/*
-			case "salaCrear":
-					//si no existe la sala (Se tiene que comprobar por nombre si existe no por objeto)
-				    if(!snakeGame.comprobarSala(json.getString("sala"))){
-				    	idSala = salasIds.getAndIncrement();
-					 	String nom = json.getString("sala");
-					    System.out.println(nom);
-					    Snake ss=(Snake) session.getAttributes().get(SNAKE_ATT);
-					    sal = new Sala(id, nom,ss);
-					    ss.setSala(sal);
-					    System.out.println("Nombre de sala "+nom);
-					    
-					    snakeGame.addSala(sal);
-					    //session.getAttributes().put(SNAKE_ATT, s);
-					    //String msn = String.format("{\"type\": \"sala\",\"data\":\"%s\"}", nom);
-					    
-					    //snakeGame.broadcast(msn);
-				    }
-				    else{
-				    	return;
-				    }
-			case "salaUnir":
-				//si existe la sala (Se tiene que devolver la sala de la lista de salas)
-				if(snakeGame.comprobarSala(json.getString("sala"))){
-					Snake sn=(Snake) session.getAttributes().get(SNAKE_ATT);
-					sal.AñadirJugador(sn);
-					sn.setSala(sal);
-			    
-			    }
-			    else{
-			    	return;
-			    }*/
-				    
 			
+			case "cancelar":
+				    
+			notify();
+			msg="{\"type\": \"cancelar\",\"info\": \"Espera cancelada\"}";
+	    	s.sendMessage(msg);
 			}	
 
 			System.out.println(payload);
