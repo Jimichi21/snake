@@ -134,8 +134,8 @@ public class SnakeHandler extends TextWebSocketHandler {
 			return;
 			
 			case "cancelar":
-				    
-			notify();
+				    System.out.println("-------------------------------\n---------------------\n cancelar");
+			
 			msg="{\"type\": \"cancelar\",\"info\": \"Espera cancelada\"}";
 	    	s.sendMessage(msg);
 			}	
