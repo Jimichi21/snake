@@ -33,14 +33,11 @@ public class Sala {
 		   	  if(contador.availablePermits()==0){
 		   		  String m="{\"type\": \"espera\"}";
 		   		  jugador.sendMessage(m);
-		   		  jugador.getsession().wait(5000);
+		   		  //jugador.getsession().wait(5000);
 		   	  }
-		 
-		      if(contador.tryAcquire() ){
-		    	  
+		   	  if(contador.tryAcquire(5,TimeUnit.SECONDS) ){
+		      //if(contador.tryAcquire() ){
 		    	  snakes.put(jugador.getId(), jugador);
-		    	
-		    	  
 		    	  return true;
 		      }else{
 		    	  return false;
