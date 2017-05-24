@@ -10,7 +10,7 @@ public class Sala {
 	private ConcurrentHashMap<Integer, Snake> snakesEspera = new ConcurrentHashMap<>();
 	 Semaphore contador;
 	boolean partida_empezada=false;
-	 
+	
 	 
 	String nombre;
 	int idCreador;
@@ -27,14 +27,19 @@ public class Sala {
 		contador.release();
 		
 	}
-	 boolean AñadirJugador(Snake jugador) throws InterruptedException{
+	 boolean AñadirJugador(Snake jugador) throws Exception{
 		  
 		   
-		   
-		      if(contador.tryAcquire(5000, TimeUnit.MILLISECONDS)){
+		   	  if(contador.availablePermits()==0){
+		   		  String m="{\"type\": \"espera\"}";
+		   		  jugador.sendMessage(m);
+		   		  jugador.getsession().wait(5000);
+		   	  }
+		 
+		      if(contador.tryAcquire() ){
 		    	  
 		    	  snakes.put(jugador.getId(), jugador);
-		    	  System.out.println("-------------------\n-------------------\n------------------------\n------------------------"+contador.availablePermits());
+		    	
 		    	  
 		    	  return true;
 		      }else{

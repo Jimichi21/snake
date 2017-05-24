@@ -131,6 +131,9 @@ public class Snake {
 	public Sala getSala(){
 		return this.sala;
 	}
-	
+	public WebSocketSession getsession(){
+		
+		return this.session;
+	}
 	}
 
