@@ -80,30 +80,32 @@ public class SnakeGame {
 		for(Sala sal : salas.values()){
 		try {
 			
-			
+			if(sal.partida_empezada==true){
+				for (Snake snake : sal.getLista().values()) {
+				    snake.update(sal.getLista().values());
+				   }
+
+				   StringBuilder sb = new StringBuilder();
+				   for (Snake snake : sal.getLista().values()) {
+					  
+				    sb.append(getLocationsJson(snake));
+				    sb.append(',');
+				   }
+				   sb.deleteCharAt(sb.length()-1);
+				   String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
+
+				   broadcast(msg,sal);
+			   }
+				  } catch (Throwable ex) {
+				   System.err.println("Exception processing tick()");
+				   ex.printStackTrace(System.err);
+				  }
+			}
 				
 
-			   for (Snake snake : sal.getLista().values()) {
-			    snake.update(sal.getLista().values());
-			   }
-
-			   StringBuilder sb = new StringBuilder();
-			   for (Snake snake : sal.getLista().values()) {
-				  
-			    sb.append(getLocationsJson(snake));
-			    sb.append(',');
-			   }
-			   sb.deleteCharAt(sb.length()-1);
-			   String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
-
-			   broadcast(msg,sal);
-
-			  } catch (Throwable ex) {
-			   System.err.println("Exception processing tick()");
-			   ex.printStackTrace(System.err);
-			  }
+			   
 	
-		}
+		
 	}
 
 	private String getLocationsJson(Snake snake) {

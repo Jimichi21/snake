@@ -9,7 +9,9 @@ public class Sala {
 	private ConcurrentHashMap<Integer, Snake> snakes = new ConcurrentHashMap<>();
 	private ConcurrentHashMap<Integer, Snake> snakesEspera = new ConcurrentHashMap<>();
 	 Semaphore contador;
-	
+	boolean partida_empezada=false;
+	 
+	 
 	String nombre;
 	int idCreador;
 	

@@ -92,11 +92,12 @@ public class SnakeHandler extends TextWebSocketHandler {
 			      boolean comprobar= sal.AñadirJugador(s);
 			      
 			      //Comprueba si hay 4 jugadores comienza el juego
-			      int aux = sal.contador.availablePermits();
-			 		if(aux == 0){ 
+			      int aux3 = sal.contador.availablePermits();
+			 		if(aux3 == 0){ 
+			 			sal.partida_empezada=true;
 			 			snakeGame.startTimer();
 			 		}
-			 		if(aux>=2){
+			 		if(aux3>=2){
 			 			
 			 		}
 			      
