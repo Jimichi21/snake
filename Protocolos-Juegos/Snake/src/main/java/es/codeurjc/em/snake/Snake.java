@@ -49,6 +49,7 @@ public class Snake {
 		this.length++;
 		sendMessage("{\"type\": \"kill\"}");
 	}
+	
 	//envio de mensajes
 	protected void sendMessage(String msg) throws Exception {
 		this.session.sendMessage(new TextMessage(msg));
