@@ -6,6 +6,7 @@ var comandoSala;
 
 window.onload = function() {
 	  document.getElementById('modal2').style.display = 'none';
+	  document.getElementById('button4').style.display = 'none';
 	};
 	
 function actionNombre(){
@@ -269,17 +270,20 @@ class Game {
 		        document.getElementById('modal2').style.display = "none";
 		        
 		       }else{
-		        Console.log(packet.info); 
-		        if(packet.info==="Error, Sala llena esperando 5 segundos"){
-		         
-		         document.getElementById('button4').style.display = "block";
-		        }
+		        Console.log("Error, La sala no existe"); 
 		       }
 		       break;
 		      
 		      case "cancelar" :
 		       Console.log(packet.info);
 		       document.getElementById('button4').style.display = "none";
+		       break;
+		       
+		      case "espera":
+		    	  Console.log("Esperando 5 segundos");
+		    	  document.getElementById('button4').style.display = "block";
+		    	  break;
+		       
 		   }
 		  }
 		}

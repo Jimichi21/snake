@@ -108,14 +108,14 @@ public class SnakeHandler extends TextWebSocketHandler {
 			      msg="{\"type\": \"Okunir\",\"data\":\"Ok\"}";
 			         s.sendMessage(msg);
 			      }else{
-			       msg="{\"type\": \"Okunir\",\"data\":\"NotOk\",\"info\":\"Error, Sala llena tiempo de espera agotado\"}";
+			       msg="{\"type\": \"cancelar\",\"data\":\"NotOk\",\"info\":\"Error, Sala llena tiempo de espera agotado\"}";
 			       s.sendMessage(msg);
 			       
 			      }
 			        }
 			        else{
 			         
-			         msg="{\"type\": \"Okunir\",\"data\":\"NotOk\",\"info\":\"Error, la sala introducida no existe\"}";
+			         msg="{\"type\": \"Okunir\",\"data\":\"NotOk\"}";
 			         s.sendMessage(msg);
 			         
 			         return;
@@ -186,7 +186,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 		
 			case "cancelar":
 				    System.out.println("-------------------------------\n---------------------\n cancelar");
-			
+			session.notify();
 			msg="{\"type\": \"cancelar\",\"info\": \"Espera cancelada\"}";
 	    	s.sendMessage(msg);
 
