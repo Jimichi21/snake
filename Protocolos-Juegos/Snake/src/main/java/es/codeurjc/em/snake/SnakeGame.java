@@ -22,23 +22,7 @@ public class SnakeGame {
 	private ScheduledExecutorService scheduler;
 
 	public void addSnake(Snake snake) {
-		/*si no hay serpientes antes se inicia el juego*/
-		/*int count = numSnakes.getAndIncrement();
-
-		if (count == 0) {		
-			startTimer(snake.getSala());
-		}*/
 		
-		/*si no hay serpientes en la sala crea el juego*/
-		/*hasta que no haya 4 jugadores en la sala de la serpiente no arranca el juego*/
-		/*cuando haya 2 jugadores en la sala el creador puede decidir iniciar la partida*/
-		int aux = snake.getSala().contador;
-		if(aux == 4){
-			startTimer(snake.getSala());
-		}
-		if(aux>=2){
-			//mandar mensaje al creador de la sala por si quiere iniciar la partida
-		}
 	}
 	
 	public boolean addSala(Sala sala){
@@ -68,24 +52,12 @@ public class SnakeGame {
 	}
 
 	public void removeSnake(Snake snake) {
-		/*se elimina la serpiente de la lista de serpientes del juego
-		 * se decrementa el numero de serpientes
-		 * si es la ultima serpiente se para el juego*/
-		/*snakes.remove(Integer.valueOf(snake.getId()));
 
-		int count = numSnakes.decrementAndGet();
-
-		if (count == 0) {
-			stopTimer();
-		}*/
-		/*se elimina la serpiente de la lista de serpientes del juego
-		 * se elimina la serpiente de la lista de serpientes de la sala
-		 * si es la ultima serpiente de la sala se elimina la sala
-		 * si es la ultima serpiente de la lista de serpientes se termina el juego*/
+		
 		snakes.remove(Integer.valueOf(snake.getId()));
 		snake.getSala().EliminarJugador(snake);
-		int aux = snake.getSala().contador;
-		if(aux == 0){
+		int aux = snake.getSala().contador.availablePermits();
+		if(aux == 4){
 			//se elimina la sala
 			removeSala(snake.getSala());
 		}
@@ -101,16 +73,22 @@ public class SnakeGame {
 		}
 	}
 
-	private void tick(Sala sala) {
+	private void tick() {
 
+		
+		
+		for(Sala sal : salas.values()){
 		try {
+			
+			
+				
 
-			   for (Snake snake : sala.getLista().values()) {
-			    snake.update(sala.getLista().values());
+			   for (Snake snake : sal.getLista().values()) {
+			    snake.update(sal.getLista().values());
 			   }
 
 			   StringBuilder sb = new StringBuilder();
-			   for (Snake snake : sala.getLista().values()) {
+			   for (Snake snake : sal.getLista().values()) {
 				  
 			    sb.append(getLocationsJson(snake));
 			    sb.append(',');
@@ -118,12 +96,14 @@ public class SnakeGame {
 			   sb.deleteCharAt(sb.length()-1);
 			   String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
 
-			   broadcast(msg,sala);
+			   broadcast(msg,sal);
 
 			  } catch (Throwable ex) {
 			   System.err.println("Exception processing tick()");
 			   ex.printStackTrace(System.err);
 			  }
+	
+		}
 	}
 
 	private String getLocationsJson(Snake snake) {
@@ -140,6 +120,22 @@ public class SnakeGame {
 			return String.format("{\"id\":%d,\"body\":[%s]}", snake.getId(), sb.toString());
 		}
 	}
+	
+	
+	public Sala getSala(String nombre){
+		  Sala s=null;
+		 
+		  for(ConcurrentHashMap.Entry<Integer, Sala> entry : salas.entrySet()) {
+		      String key = entry.getValue().getName();
+		     if(nombre.equals(key)){
+		      s=entry.getValue();
+		      return s; 
+		     }
+		  
+		 }
+		  return s;
+		}
+	
 
 	public void broadcast(String message, Sala sala) throws Exception {
 
@@ -160,9 +156,9 @@ public class SnakeGame {
 		}
 	}
 
-	public void startTimer(Sala sala) {
+	public void startTimer() {
 		scheduler = Executors.newScheduledThreadPool(1);
-		scheduler.scheduleAtFixedRate(() -> tick(sala), TICK_DELAY, TICK_DELAY, TimeUnit.MILLISECONDS);
+		scheduler.scheduleAtFixedRate(() -> tick(), TICK_DELAY, TICK_DELAY, TimeUnit.MILLISECONDS);
 	}
 
 	public void stopTimer() {

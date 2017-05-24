@@ -131,5 +131,6 @@ public class Snake {
 	public Sala getSala(){
 		return this.sala;
 	}
+	
 	}
 

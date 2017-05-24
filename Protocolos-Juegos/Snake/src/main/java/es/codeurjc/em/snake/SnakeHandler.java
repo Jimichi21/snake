@@ -46,60 +46,95 @@ public class SnakeHandler extends TextWebSocketHandler {
 			
 			case "user":
 			
-				
-			    String nombre = json.getString("user");
-			    System.out.println(nombre);
-			    s = new Snake(id, session, nombre);
-			    System.out.println("Nombre de usuario "+nombre);
-			    
-			    
-			    if(json.getString("ComandoSala").equals("Crear")){
-			    	
-			    	if(!snakeGame.comprobarSala(json.getString("Sala"))){
-				    	idSala = salasIds.getAndIncrement();
-					 	String nom = json.getString("Sala");
-					    System.out.println(nom);
-					   
-					    sal = new Sala(id, nom);
-					    sal.AñadirJugador(s);
-					    s.setSala(sal);
-					    System.out.println("Nombre de sala "+nom);
-					    
-					    snakeGame.addSala(sal);
-			    	
-			    	
-			    	
-			    }else{
-			    	return;
-			    	}
-			    }else{
-			    	
-			    	//si existe la sala (Se tiene que devolver la sala de la lista de salas)
-					if(snakeGame.comprobarSala(json.getString("Sala"))){
-						
-						sal.AñadirJugador(s);
-						s.setSala(sal);
-				    
-				    }
-				    else{
-				    	return;
-				    }
-			    	
-			    }
-			    session.getAttributes().put(SNAKE_ATT, s);
-			    snakeGame.addSnake(s);
+				 String msg; //Tendrá el mensaje de confirmación o no de que la sala existe o no
+			       String nombre = json.getString("user");
+			       System.out.println(nombre);
+			       s = new Snake(id, session, nombre);
+			       System.out.println("Nombre de usuario "+nombre);
+			       
+			       
+			       if(json.getString("ComandoSala").equals("Crear")){
+			        
+			        //Si no existe la sala la crea
+			        if(!snakeGame.comprobarSala(json.getString("Sala"))){
+			         idSala = salasIds.getAndIncrement();
+			       String nom = json.getString("Sala");
+			         System.out.println(nom);
+			        
+			         sal = new Sala(id, nom);
+			         sal.AñadirJugador(s);
+			         
 
-			    StringBuilder sb = new StringBuilder();
-			    for (Snake snake : sal.getLista().values()) {   
-			     sb.append(String.format("{\"id\": %d, \"color\": \"%s\",\"nombre\":\"%s\"}", snake.getId(), snake.getHexColor(),nombre));
-			     sb.append(',');
-			    }
-			    sb.deleteCharAt(sb.length()-1);
-			    String msg = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
+			         
+			         s.setSala(sal);
+			         System.out.println("Nombre de sala "+nom);
+			         
+			         snakeGame.addSala(sal);
+			        
+			         msg="{\"type\": \"Okcrear\",\"data\":\"Ok\"}";
+			         s.sendMessage(msg);
+			        
+			       }else{
+			        
+			        msg="{\"type\": \"Okcrear\",\"data\":\"NotOk\"}";
+			        s.sendMessage(msg);
+			        return;
+			        }
+			       }else{
+			        
+			        //si existe la sala (Se tiene que devolver la sala de la lista de salas)
+			     if(snakeGame.comprobarSala(json.getString("Sala"))){
+			      
+			      sal=snakeGame.getSala(json.getString("Sala"));
+			      
+			      
+			      
+			      boolean comprobar= sal.AñadirJugador(s);
+			      
+			      //Comprueba si hay 4 jugadores comienza el juego
+			      int aux = sal.contador.availablePermits();
+			 		if(aux == 0){ 
+			 			snakeGame.startTimer();
+			 		}
+			 		if(aux>=2){
+			 			
+			 		}
+			      
+			        
+			      if(comprobar){	//true si se ha añadido el jugador
+			      s.setSala(sal);
+			      
+			      msg="{\"type\": \"Okunir\",\"data\":\"Ok\"}";
+			         s.sendMessage(msg);
+			      }else{
+			       msg="{\"type\": \"Okunir\",\"data\":\"NotOk\",\"info\":\"Error, Sala llena tiempo de espera agotado\"}";
+			       s.sendMessage(msg);
+			       
+			      }
+			        }
+			        else{
+			         
+			         msg="{\"type\": \"Okunir\",\"data\":\"NotOk\",\"info\":\"Error, la sala introducida no existe\"}";
+			         s.sendMessage(msg);
+			         
+			         return;
+			        }
+			        
+			       }
+			       session.getAttributes().put(SNAKE_ATT, s);
+			       snakeGame.addSnake(s);
+
+			       StringBuilder sb = new StringBuilder();
+			       for (Snake snake : sal.getLista().values()) {   
+			        sb.append(String.format("{\"id\": %d, \"color\": \"%s\",\"nombre\":\"%s\"}", snake.getId(), snake.getHexColor(),nombre));
+			        sb.append(',');
+			       }
+			       sb.deleteCharAt(sb.length()-1);
+			       String msg2 = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
+			       
+			       snakeGame.broadcast(msg2, s.getSala());
 			    
-			    snakeGame.broadcast(msg, s.getSala());
-				
-			break;
+			   break;
 				
 			case "direction":
 				Snake sn = (Snake) session.getAttributes().get(SNAKE_ATT);

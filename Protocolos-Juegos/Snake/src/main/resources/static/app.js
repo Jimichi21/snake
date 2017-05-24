@@ -228,34 +228,64 @@ class Game {
 			var packet = JSON.parse(message.data);
 			
 			switch (packet.type) {
-			   case 'update':
-			    for (var i = 0; i < packet.data.length; i++) {
-			     this.updateSnake(packet.data[i].id, packet.data[i].body);
-			    }
-			    break;
-			   case 'join':
-				   
-			    for (var j = 0; j < packet.data.length; j++) {
-			     Console.log('hola '+packet.data[j].nombre);
-			     this.addSnake(packet.data[j].id, packet.data[j].color,packet.data[j].nombre);
-			    }
-			    break;
-			   case 'leave':
-			    Console.log(packet.nombre+' ha dejado la partida');
-			    this.removeSnake(packet.id);
-			    break;
-			   case 'dead':
-			    Console.log('Info: Your snake is dead, bad luck!');
-			    this.direction = 'none';
-			    break;
-			   case 'kill':
-			    Console.log('Info: Head shot!');
-			    break;
-			   }
+		      case 'update':
+		       for (var i = 0; i < packet.data.length; i++) {
+		        this.updateSnake(packet.data[i].id, packet.data[i].body);
+		       }
+		       break;
+		      case 'join':
+		       
+		       Console.log(packet.data[0].nombre+" Ha entrado en la sala");
+		       for (var j = 0; j < packet.data.length; j++) {
+		        
+		        this.addSnake(packet.data[j].id, packet.data[j].color,packet.data[j].nombre);
+		       }
+		       break;
+		      case 'leave':
+		       Console.log(packet.nombre+' ha dejado la partida');
+		       this.removeSnake(packet.id);
+		       break;
+		      case 'dead':
+		       Console.log('Info: Your snake is dead, bad luck!');
+		       this.direction = 'none';
+		       break;
+		      case 'kill':
+		       Console.log('Info: Head shot!');
+		       break;
+		       
+		      case 'Okcrear': 
+		       if(packet.data==='Ok'){
+		        Console.log('Sala '+sala+" creada con éxito"); 
+		        document.getElementById('modal2').style.display = "none";
+		        
+		       }else{
+		        Console.log('Error, la sala '+sala+" ya existe"); 
+		       }
+		       break;
+		       
+		      case 'Okunir': 
+		       if(packet.data==='Ok'){
+		        
+		        document.getElementById('modal2').style.display = "none";
+		        
+		       }else{
+		        Console.log(packet.info); 
+		        if(packet.info==="Error, Sala llena esperando 5 segundos"){
+		         
+		         document.getElementById('button4').style.display = "block";
+		        }
+		       }
+		       break;
+		      
+		      case "cancelar" :
+		       Console.log(packet.info);
+		       document.getElementById('button4').style.display = "none";
+		   }
+		  }
 		}
 	}
 		
-}
+
 let game=new Game();
 
 
