@@ -166,4 +166,13 @@ public class SnakeGame {
 			scheduler.shutdown();
 		}
 	}
+	public void generarComida(Sala sal) throws Exception{
+		  
+		  Location l=SnakeUtils.getRandomLocation();
+		  StringBuilder sb = new StringBuilder();
+		  sb.append(String.format("{\"x\": %d, \"y\": %d}", l.x, l.y));
+		  String msg=sb.toString();
+		  broadcast(msg,sal);
+		  
+		 }
 }

@@ -89,6 +89,18 @@ class Snake {
 	}
 }
 
+class Comida{
+	constructor(){
+		this.comida;
+		this.color = #FFEF00;
+	}
+
+	draw(context){
+		context.fillStyle = this.color;
+		context.fillRect(pos.x, pos.y,game.gridSize, game.gridSize);
+	}
+}
+
 class Game {
 	
 	enviar(mens){
@@ -178,6 +190,11 @@ class Game {
 		}
 	}
 
+	drawComida(){
+		this.context.clearRect(0, 0, 640, 480);
+		this.comida.draw(this.context);
+	}
+
 	addSnake(id, color) {
 		this.snakes[id] = new Snake();
 		this.snakes[id].color = color;
@@ -201,9 +218,11 @@ class Game {
 			this.nextGameTick += this.skipTicks;
 		}
 		this.draw();
+		this.drawComida();
 		if (this.nextFrame != null) {
 			this.nextFrame();
 		}
+
 	}
 
 	connect() {
