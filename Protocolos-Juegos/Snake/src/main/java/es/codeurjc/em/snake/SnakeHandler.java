@@ -19,6 +19,7 @@ public class SnakeHandler extends TextWebSocketHandler {
     
 	Snake s;
 	Sala sal;
+	Thread añadir;
 	
 	int idSala;
 	int id;
@@ -45,95 +46,120 @@ public class SnakeHandler extends TextWebSocketHandler {
 			switch (tipo){
 			
 			case "user":
-			
-				   String msg; //Tendrá el mensaje de confirmación o no de que la sala existe o no
-			       String nombre = json.getString("user");
-			       System.out.println(nombre);
-			       s = new Snake(id, session, nombre);
-			       System.out.println("Nombre de usuario "+nombre);
-			       
-			       
-			       if(json.getString("ComandoSala").equals("Crear")){
-			        
-			    	   //Si no existe la sala la crea
-			    	   if(!snakeGame.comprobarSala(json.getString("Sala"))){
-			    		   	idSala = salasIds.getAndIncrement();
-			    		   	String nom = json.getString("Sala");
-			    		   	System.out.println(nom);
-			        
-			    		   	sal = new Sala(id, nom);
-			    		   	sal.AñadirJugador(s);
-
-			    		   	s.setSala(sal);
-			    		   	System.out.println("Nombre de sala "+nom);
-			         
-			    		   	snakeGame.addSala(sal);
-			        
-			    		   	msg="{\"type\": \"Okcrear\",\"data\":\"Ok\"}";
-			    		   	s.sendMessage(msg);
-			        
-			    	   }else{
-			        
-			    		   msg="{\"type\": \"Okcrear\",\"data\":\"NotOk\"}";
-			    		   s.sendMessage(msg);
-			    		   return;
-			    	   }
-			       }else{
-			        
-			    	   //si existe la sala (Se tiene que devolver la sala de la lista de salas)
-			    	   if(snakeGame.comprobarSala(json.getString("Sala"))){
-			      
-			    		   sal=snakeGame.getSala(json.getString("Sala"));
-			    		   boolean comprobar= sal.AñadirJugador(s);
-			      
-			    		   //Comprueba si hay 4 jugadores comienza el juego
-			    		   int aux3 = sal.contador.availablePermits();
-			    		   if(aux3 == 0){ 
-			    			   sal.partida_empezada=true;
-			    			   snakeGame.startTimer();
-			    		   }
-			    		   if(aux3<=2){
-			    			   
-			    			   msg="{\"type\": \"iniciar\"}";
-			    			   System.out.println("----------------->"+msg);
-			    			   
-			    			   sal.getCreador().sendMessage(msg);
-			    		   }
-			        
-			    		   if(comprobar){	//true si se ha añadido el jugador
-			    			   s.setSala(sal);
-			      
-			    			   msg="{\"type\": \"Okunir\",\"data\":\"Ok\"}";
-			    			   s.sendMessage(msg);
-			    		   }else{
-			    			   //msg="{\"type\": \"cancelar\",\"data\":\"NotOk\",\"info\":\"Error, Sala llena tiempo de espera agotado\"}";
-			    			   msg="{\"type\": \"cancelar\",\"info\":\"Error, Sala llena tiempo de espera agotado\"}";
-			    			   s.sendMessage(msg);
-			       
-			    		   }
-			    	   }else{
-			         
-			    		   msg="{\"type\": \"Okunir\",\"data\":\"NotOk\"}";
-			    		   s.sendMessage(msg);
-			         
-			    		   return;
-			    	   }
-			        
-			       	}
-			       session.getAttributes().put(SNAKE_ATT, s);
-			       snakeGame.addSnake(s);
-
-			       StringBuilder sb = new StringBuilder();
-			       for (Snake snake : sal.getLista().values()) {   
-			    	   sb.append(String.format("{\"id\": %d, \"color\": \"%s\",\"nombre\":\"%s\"}", snake.getId(), snake.getHexColor(),nombre));
-			    	   sb.append(',');
-			       }
-			       sb.deleteCharAt(sb.length()-1);
-			       String msg2 = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
-			       
-			       snakeGame.broadcast(msg2, s.getSala());
 			    
-			   break;
+			     añadir=new Thread(()->{
+			      try {
+			       String msg; //Tendrá el mensaje de confirmación o no de que la sala existe o no
+			             String nombre = json.getString("user");
+			             System.out.println(nombre);
+			             s = new Snake(id, session, nombre);
+			             System.out.println("Nombre de usuario "+nombre);
+			             
+			             
+			             if(json.getString("ComandoSala").equals("Crear")){
+			              
+			              //Si no existe la sala la crea
+			              if(!snakeGame.comprobarSala(json.getString("Sala"))){
+			               idSala = salasIds.getAndIncrement();
+			             String nom = json.getString("Sala");
+			               System.out.println(nom);
+			              
+			               sal = new Sala(id, nom);
+			               sal.AñadirJugador(s);
+			               
+
+			               
+			               s.setSala(sal);
+			               System.out.println("Nombre de sala "+nom);
+			               
+			               snakeGame.addSala(sal);
+			              
+			               msg="{\"type\": \"Okcrear\",\"data\":\"Ok\"}";
+			               s.sendMessage(msg);
+			              
+			             }else{
+			              
+			              msg="{\"type\": \"Okcrear\",\"data\":\"NotOk\"}";
+			              s.sendMessage(msg);
+			              return;
+			              }
+			             }else{
+			              
+			              //si existe la sala (Se tiene que devolver la sala de la lista de salas)
+			           if(snakeGame.comprobarSala(json.getString("Sala"))){
+			            
+			            sal=snakeGame.getSala(json.getString("Sala"));
+			            
+			            
+			            
+			           System.out.println("HOLAAAAAAAAAAAAAA111111");
+			            
+			        
+
+			           
+			            
+			           boolean comprobar=  sal.AñadirJugador(s);
+			            
+			            
+			            
+			            
+			            
+			            //Espero a que termine de añadir el jugador, de lo contrario la siguiente instruccion no se sabe que valor tomaria
+			      
+			             
+			            //Comprueba si hay 4 jugadores comienza el juego
+			            int aux3 = sal.contador.availablePermits();
+			         if(aux3 == 0){ 
+			          sal.partida_empezada=true;
+			          snakeGame.startTimer();
+			         }
+			         if(aux3>=2){
+			        	 msg="{\"type\": \"iniciar\"}";
+		    			   System.out.println("----------------->"+msg);
+		    			   
+		    			   sal.getCreador().sendMessage(msg);
+			         }
+			            
+			         
+			            if(comprobar){ //true si se ha añadido el jugador
+			            s.setSala(sal);
+			            
+			            msg="{\"type\": \"Okunir\",\"data\":\"Ok\"}";
+			            
+			               s.sendMessage(msg);
+			            
+			              }
+			              else{
+			               
+			               msg="{\"type\": \"Okunir\",\"data\":\"NotOk\"}";
+			               s.sendMessage(msg);
+			               
+			               return;
+			              }
+			           }}
+			           
+			             session.getAttributes().put(SNAKE_ATT, s);
+			             snakeGame.addSnake(s);
+
+			             StringBuilder sb = new StringBuilder();
+			             for (Snake snake : sal.getLista().values()) {   
+			              sb.append(String.format("{\"id\": %d, \"color\": \"%s\",\"nombre\":\"%s\"}", snake.getId(), snake.getHexColor(),nombre));
+			              sb.append(',');
+			             }
+			             sb.deleteCharAt(sb.length()-1);
+			             String msg2 = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
+			             
+			             snakeGame.broadcast(msg2, s.getSala());
+			            
+			       
+			      } catch (Exception e) {
+			       // TODO Auto-generated catch block
+			       e.printStackTrace();
+			      }
+			     });
+			     
+			     añadir.start();
+			     break;
 				
 			case "direction":
 				Snake sn = (Snake) session.getAttributes().get(SNAKE_ATT);
@@ -148,10 +174,11 @@ public class SnakeHandler extends TextWebSocketHandler {
 			return;
 				    
 			case "cancelar":
-				    System.out.println("-------------------------------\n---------------------\n cancelar");
-			session.notify();
-			msg="{\"type\": \"cancelar\",\"info\": \"Espera cancelada\"}";
-	    	s.sendMessage(msg);
+				   System.out.println("-------------------------------\n---------------------\n cancelar");
+				   añadir.interrupt();
+				   String ms="{\"type\": \"cancelar\",\"info\": \"Espera cancelada\"}";
+				   s.sendMessage(ms);
+
 	    	
 			case "Init":
 				System.out.println("recibido Init");

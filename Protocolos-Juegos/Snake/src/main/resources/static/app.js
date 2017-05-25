@@ -27,7 +27,7 @@ function actionNombre(){
 function actionCrear(){
 	sala = $("#texto2").val();
 	comandoSala="Crear";
-	document.getElementById('modal3').style.display = "block";
+
 
 	juego();
 	 
@@ -37,7 +37,7 @@ function actionUnir(){
 	sala = $("#texto2").val();
 	comandoSala="Unir";
 
-	document.getElementById('modal3').style.display = "block";
+
 	
 	juego();
 }
@@ -277,19 +277,20 @@ class Game {
 		       break;
 		       
 		      case 'Okunir': 
-		       if(packet.data==='Ok'){
-		        
-		        document.getElementById('modal2').style.display = "none";
-		        
-		       }else{
-		        Console.log("Error, La sala no existe"); 
-		       }
-		       break;
-		      
-		      case "cancelar" :
-		       Console.log(packet.info);
-		       document.getElementById('button4').style.display = "none";
-		       break;
+         		if(packet.data==='Ok'){
+          
+         		document.getElementById('modal2').style.display = "none";
+          
+         		}else{
+          			Console.log("Espera cancelada, tiempo agotado"); 
+         			document.getElementById('button4').style.display = "none";
+         		}
+         		break;
+        
+        	  case "cancelar" :
+         		Console.log(packet.info);
+         		document.getElementById('button4').style.display = "none";
+         		break;
 		       
 		      case "espera":
 		    	  Console.log("Esperando 5 segundos");
