@@ -35,7 +35,7 @@ public class Sala {
 		   		  jugador.sendMessage(m);
 		   		  //jugador.getsession().wait(5000);
 		   	  }
-		   	  if(contador.tryAcquire(5,TimeUnit.SECONDS) ){
+		   	  if(contador.tryAcquire(5,TimeUnit.SECONDS)){
 		      //if(contador.tryAcquire() ){
 		    	  snakes.put(jugador.getId(), jugador);
 		    	  return true;
@@ -44,8 +44,13 @@ public class Sala {
 		      }
 		   
 	 }
-
+	 void Cancelar(){
 		 
+	 }
+
+	Snake getCreador(){
+		return snakes.get(idCreador);
+	}
 		 
 		 
 	

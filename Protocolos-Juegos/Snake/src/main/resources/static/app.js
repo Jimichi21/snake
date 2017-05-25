@@ -6,7 +6,9 @@ var comandoSala;
 
 window.onload = function() {
 	  document.getElementById('modal2').style.display = 'none';
+	  document.getElementById('modal3').style.display = 'none';
 	  document.getElementById('button4').style.display = 'none';
+	  document.getElementById('button5').style.display = 'none';
 	};
 	
 function actionNombre(){
@@ -16,15 +18,17 @@ function actionNombre(){
 	  console.log(user);
 
 	  document.getElementById('modal1').style.display = "none";
+	  document.getElementById('modal3').style.display = "none";
 	  document.getElementById('button4').style.display = "none";
 	  document.getElementById('modal2').style.display = "block";
+	  document.getElementById('button5').style.display = "none";
 		  
 }
 function actionCrear(){
 	sala = $("#texto2").val();
 	comandoSala="Crear";
-	
-	
+	document.getElementById('modal3').style.display = "block";
+
 	juego();
 	 
 	
@@ -33,6 +37,7 @@ function actionUnir(){
 	sala = $("#texto2").val();
 	comandoSala="Unir";
 
+	document.getElementById('modal3').style.display = "block";
 	
 	juego();
 }
@@ -41,6 +46,13 @@ function actionCancelar(){
 	var mensaje={"type": "cancelar"};
 	game.enviar(mensaje);
 }
+function actionIniciar(){
+	Console.log("has pulsado iniciar");
+	var aux = {"type": "Init"};
+	
+	game.enviar(aux);
+	
+}		
 
 
 	
@@ -283,12 +295,15 @@ class Game {
 		    	  Console.log("Esperando 5 segundos");
 		    	  document.getElementById('button4').style.display = "block";
 		    	  break;
-		       
+		       case 'iniciar':
+		       		Console.log("ya puedes iniciar");
+		       		document.getElementById('button5').style.display = "block";
+		       		document.getElementById('modal3').style.display = "block";
+		       		break;
 		   }
 		  }
 		}
 	}
-		
 
 let game=new Game();
 

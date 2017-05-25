@@ -92,8 +92,12 @@ public class SnakeHandler extends TextWebSocketHandler {
 			    			   sal.partida_empezada=true;
 			    			   snakeGame.startTimer();
 			    		   }
-			    		   if(aux3>=2){
-			 			
+			    		   if(aux3<=2){
+			    			   
+			    			   msg="{\"type\": \"iniciar\"}";
+			    			   System.out.println("----------------->"+msg);
+			    			   
+			    			   sal.getCreador().sendMessage(msg);
 			    		   }
 			        
 			    		   if(comprobar){	//true si se ha añadido el jugador
@@ -148,7 +152,11 @@ public class SnakeHandler extends TextWebSocketHandler {
 			session.notify();
 			msg="{\"type\": \"cancelar\",\"info\": \"Espera cancelada\"}";
 	    	s.sendMessage(msg);
-
+	    	
+			case "Init":
+				System.out.println("recibido Init");
+				sal.partida_empezada=true;
+ 			   	snakeGame.startTimer();
 			}	
 
 			System.out.println(payload);

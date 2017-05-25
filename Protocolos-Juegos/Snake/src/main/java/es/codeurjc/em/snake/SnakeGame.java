@@ -62,6 +62,7 @@ public class SnakeGame {
 			removeSala(snake.getSala());
 		}
 		
+		
 	}
 	
 	void removeSala(Sala sala){
