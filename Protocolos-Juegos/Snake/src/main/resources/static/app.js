@@ -90,14 +90,16 @@ class Snake {
 }
 
 class Comida{
-	constructor(){
-		this.comida;
-		this.color = #FFEF00;
+	constructor(x,y,color){
+		this.x=x;
+		this.y=y;
+		this.color = color;
 	}
 
 	draw(context){
+		
 		context.fillStyle = this.color;
-		context.fillRect(pos.x, pos.y,game.gridSize, game.gridSize);
+		context.fillRect(this.x, this.y,game.gridSize, game.gridSize);
 	}
 }
 
@@ -116,6 +118,7 @@ class Game {
 		this.interval = null;
 		this.direction = 'none';
 		this.gridSize = 10;
+		this.comida=new Comida(0,0,1);
 		
 		this.skipTicks = 1000 / this.fps;
 		this.nextGameTick = (new Date).getTime();
@@ -185,15 +188,13 @@ class Game {
 
 	draw() {
 		this.context.clearRect(0, 0, 640, 480);
+		this.comida.draw(this.context);
 		for (var id in this.snakes) {			
 			this.snakes[id].draw(this.context);
 		}
 	}
 
-	drawComida(){
-		this.context.clearRect(0, 0, 640, 480);
-		this.comida.draw(this.context);
-	}
+	
 
 	addSnake(id, color) {
 		this.snakes[id] = new Snake();
@@ -211,6 +212,15 @@ class Game {
 		// Force GC.
 		delete this.snakes[id];
 	}
+	
+	añadirComida(x,y,color){
+		this.comida=new Comida(x,y,color);
+		
+		Console.log('Comida x '+x+" Comida y "+y);
+	
+		
+		
+	}
 
 	run() {
 	
@@ -218,7 +228,7 @@ class Game {
 			this.nextGameTick += this.skipTicks;
 		}
 		this.draw();
-		this.drawComida();
+		this.comida.draw(this.context);
 		if (this.nextFrame != null) {
 			this.nextFrame();
 		}
@@ -320,6 +330,10 @@ class Game {
 		       		document.getElementById('button5').style.display = "block";
 		       		document.getElementById('modal3').style.display = "block";
 		       		break;
+		       	
+		       case 'comida':
+		    	   this.añadirComida(packet.x,packet.y,'#FFFFFF');
+		    	   
 		   }
 		  }
 		}

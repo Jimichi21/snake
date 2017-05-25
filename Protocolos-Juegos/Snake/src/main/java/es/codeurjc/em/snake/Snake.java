@@ -90,7 +90,13 @@ public class Snake {
 			boolean headCollision = this.id != snake.id && snake.getHead().equals(this.head);
 			//choca con la cola
 			boolean tailCollision = snake.getTail().contains(this.head);
-
+			
+			boolean comidaCollision =snake.getHead().equals(snake.getSala().getComida().getL());
+			
+			if(comidaCollision){
+				snake.reward();
+				snake.getSala().setComida(null);
+			}
 			if (headCollision || tailCollision) {
 				kill();
 				if (this.id != snake.id) {

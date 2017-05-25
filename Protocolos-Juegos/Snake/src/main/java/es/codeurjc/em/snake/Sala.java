@@ -10,16 +10,17 @@ public class Sala {
 	private ConcurrentHashMap<Integer, Snake> snakesEspera = new ConcurrentHashMap<>();
 	 Semaphore contador;
 	boolean partida_empezada=false;
-
+	
 	 
 	String nombre;
 	int idCreador;
+	private Comida comida;
 	
 	Sala(int id, String nombre){
 		this.id = id;
 		this.nombre = nombre;
 		contador=new Semaphore(4, true);
-		
+		setComida(null);
 	}
 	void EliminarJugador(Snake jugador){
 		
@@ -70,4 +71,12 @@ public class Sala {
 	boolean SerpientesEsperando(){
 		return snakesEspera.isEmpty();
 	}
+	public Comida getComida() {
+		return comida;
+	}
+	public void setComida(Comida comida) {
+		this.comida = comida;
+	}
+	
+	
 }

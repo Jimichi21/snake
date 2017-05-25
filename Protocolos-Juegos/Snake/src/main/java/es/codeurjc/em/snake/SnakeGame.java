@@ -82,6 +82,12 @@ public class SnakeGame {
 		try {
 			
 			if(sal.partida_empezada==true){
+				
+				if(sal.getComida()==null){
+					generarComida(sal);
+					
+				}
+				
 				for (Snake snake : sal.getLista().values()) {
 				    snake.update(sal.getLista().values());
 				   }
@@ -169,9 +175,10 @@ public class SnakeGame {
 	public void generarComida(Sala sal) throws Exception{
 		  
 		  Location l=SnakeUtils.getRandomLocation();
-		  StringBuilder sb = new StringBuilder();
-		  sb.append(String.format("{\"x\": %d, \"y\": %d}", l.x, l.y));
-		  String msg=sb.toString();
+		  Comida com=new Comida(l);
+		  sal.setComida(com);
+		  
+		  String msg = String.format("{\"type\": \"comida\", \"x\": %d,\"y\":\"%d\"}", l.x,l.y);
 		  broadcast(msg,sal);
 		  
 		 }
