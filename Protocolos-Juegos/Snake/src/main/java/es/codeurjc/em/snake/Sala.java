@@ -49,7 +49,7 @@ public class Sala {
 		 
 	 }
 
-	Snake getCreador(){
+	synchronized Snake getCreador(){
 		return snakes.get(idCreador);
 	}
 		 

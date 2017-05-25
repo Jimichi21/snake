@@ -103,10 +103,6 @@ public class SnakeGame {
 				  }
 			}
 				
-
-			   
-	
-		
 	}
 
 	private String getLocationsJson(Snake snake) {
@@ -147,8 +143,9 @@ public class SnakeGame {
 		
 		for (Snake snake : sala.getLista().values()) {
 			try {
-				 System.out.println("------------->"+snake.getName());
-				System.out.println("Sending message " + message + " to " + snake.getId());
+				 System.out.println("------------- Serpiente:>"+snake.getName());
+				 System.out.println("-------------> Sala:"+sala.getName());
+				//System.out.println("Sending message " + message + " to " + snake.getId());
 				snake.sendMessage(message);
 
 			} catch (Throwable ex) {

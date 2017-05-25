@@ -66,7 +66,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			              
 			               sal = new Sala(id, nom);
 			               sal.AñadirJugador(s);
-			               
+			               sal.idCreador=s.getId();
 
 			               
 			               s.setSala(sal);
@@ -83,6 +83,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			              s.sendMessage(msg);
 			              return;
 			              }
+			             //si el comando es unir:
 			             }else{
 			              
 			              //si existe la sala (Se tiene que devolver la sala de la lista de salas)
@@ -90,20 +91,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			            
 			            sal=snakeGame.getSala(json.getString("Sala"));
 			            
-			            
-			            
-			           System.out.println("HOLAAAAAAAAAAAAAA111111");
-			            
-			        
-
-			           
-			            
 			           boolean comprobar=  sal.AñadirJugador(s);
-			            
-			            
-			            
-			            
-			            
 			            //Espero a que termine de añadir el jugador, de lo contrario la siguiente instruccion no se sabe que valor tomaria
 			      
 			             
@@ -113,7 +101,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			          sal.partida_empezada=true;
 			          snakeGame.startTimer();
 			         }
-			         if(aux3>=2){
+			         if(aux3>=2 && (!sal.partida_empezada)){
 			        	 msg="{\"type\": \"iniciar\"}";
 		    			   System.out.println("----------------->"+msg);
 		    			   
