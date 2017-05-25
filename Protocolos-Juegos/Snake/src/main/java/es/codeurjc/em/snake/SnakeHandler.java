@@ -170,7 +170,8 @@ public class SnakeHandler extends TextWebSocketHandler {
 	    	
 			case "Init":
 				System.out.println("recibido Init");
-				sal.partida_empezada=true;
+				Snake s = (Snake) session.getAttributes().get(SNAKE_ATT);
+				s.getSala().partida_empezada=true;
  			   	snakeGame.startTimer();
 			}	
 
