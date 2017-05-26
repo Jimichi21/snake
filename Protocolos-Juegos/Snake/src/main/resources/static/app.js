@@ -7,6 +7,7 @@ var comandoSala;
 window.onload = function() {
 	  document.getElementById('modal2').style.display = 'none';
 	  document.getElementById('modal3').style.display = 'none';
+	  document.getElementById('modal4').style.display = 'none';
 	  document.getElementById('button4').style.display = 'none';
 	  document.getElementById('button5').style.display = 'none';
 	};
@@ -337,7 +338,8 @@ class Game {
 		    	   break;
 		    	
 		    	case 'fin':
-
+		    		Console.log("fin de partida");
+		    		document.getElementById('modal4').style.display = "block";
 		    	   
 		   }
 		  }

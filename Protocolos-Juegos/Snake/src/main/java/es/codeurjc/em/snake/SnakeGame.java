@@ -73,9 +73,6 @@ public class SnakeGame {
 		if(count==0){
 			//cerrar juego
 			stopTimer();
-			//mandar mensaje para que salga la puntuacion global del juego
-			String msg = String.format("{\"type\": \"fin\"}");
-			broadcast(msg, sala);
 		}
 	}
 
@@ -181,6 +178,9 @@ public class SnakeGame {
 
 	public void stopTimer() {
 		if (scheduler != null) {
+			//mandar mensaje para que salga la puntuacion global del juego
+			//String msg = String.format("{\"type\": \"fin\"}");
+			//broadcast(msg, sala);
 			scheduler.shutdown();
 		}
 	}
