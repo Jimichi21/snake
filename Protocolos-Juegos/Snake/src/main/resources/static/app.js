@@ -49,7 +49,8 @@ function actionCancelar(){
 function actionIniciar(){
 	Console.log("has pulsado iniciar");
 	var aux = {"type": "Init"};
-	
+	document.getElementById('modal3').style.display = 'none';
+	document.getElementById('button5').style.display = "none";
 	game.enviar(aux);
 	
 }		
@@ -118,7 +119,7 @@ class Game {
 		this.interval = null;
 		this.direction = 'none';
 		this.gridSize = 10;
-		this.comida=new Comida(0,0,1);
+		this.comida=new Comida(0,0,'#FF0000');
 		
 		this.skipTicks = 1000 / this.fps;
 		this.nextGameTick = (new Date).getTime();
@@ -332,7 +333,11 @@ class Game {
 		       		break;
 		       	
 		       case 'comida':
-		    	   this.añadirComida(packet.x,packet.y,'#FFFFFF');
+		    	   this.añadirComida(packet.x,packet.y,'#FF0000');
+		    	   break;
+		    	
+		    	case 'fin':
+
 		    	   
 		   }
 		  }

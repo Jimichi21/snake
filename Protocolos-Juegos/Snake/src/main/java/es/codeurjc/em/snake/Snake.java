@@ -21,6 +21,7 @@ public class Snake {
 	private String nombre_jugador;
 	private Direction direction;
 	private Sala sala;
+	private int puntuacion = 0;
 
 	private final WebSocketSession session;
 	
@@ -90,19 +91,24 @@ public class Snake {
 			boolean headCollision = this.id != snake.id && snake.getHead().equals(this.head);
 			//choca con la cola
 			boolean tailCollision = snake.getTail().contains(this.head);
-			
+			if(snake.getSala().getComida()!=null){
 			boolean comidaCollision =snake.getHead().equals(snake.getSala().getComida().getL());
 			
-			if(comidaCollision){
+			if(comidaCollision){			
+				snake.puntuacion++;
+				System.out.println("-------------->puntuacion:"+snake.getPuntuacion()+" serpiente:"+snake.getName());
 				snake.reward();
 				snake.getSala().setComida(null);
 			}
+			}
 			if (headCollision || tailCollision) {
 				kill();
+				snake.puntuacion--;
 				if (this.id != snake.id) {
 					snake.reward();
 				}
 			}
+			
 		}
 	}
 	//posicion de la cabeza
@@ -141,6 +147,9 @@ public class Snake {
 	public WebSocketSession getsession(){
 		
 		return this.session;
+	}
+	public int getPuntuacion(){
+		return this.puntuacion;
 	}
 	}
 

@@ -21,8 +21,10 @@ public class SnakeGame {
 
 	private ScheduledExecutorService scheduler;
 
+
 	public void addSnake(Snake snake) {
-		
+		snakes.put(snake.getId(), snake);
+		numSnakes.getAndIncrement();
 	}
 	
 	public boolean addSala(Sala sala){
@@ -51,10 +53,10 @@ public class SnakeGame {
 		return snakes.values();
 	}
 
-	public void removeSnake(Snake snake) {
+	public void removeSnake(Snake snake) throws Exception {
 
 		
-		snakes.remove(Integer.valueOf(snake.getId()));
+		//snakes.remove(Integer.valueOf(snake.getId()));
 		snake.getSala().EliminarJugador(snake);
 		int aux = snake.getSala().contador.availablePermits();
 		if(aux == 4){
@@ -65,44 +67,57 @@ public class SnakeGame {
 		
 	}
 	
-	void removeSala(Sala sala){
+	void removeSala(Sala sala) throws Exception{
 		salas.remove(sala.getId());
 		int count = numSalas.decrementAndGet();
 		if(count==0){
 			//cerrar juego
 			stopTimer();
+			//mandar mensaje para que salga la puntuacion global del juego
+			String msg = String.format("{\"type\": \"fin\"}");
+			broadcast(msg, sala);
 		}
 	}
 
 	private void tick() {
-
-		
-		
+	
 		for(Sala sal : salas.values()){
 		try {
 			
 			if(sal.partida_empezada==true){
 				
-				if(sal.getComida()==null){
+				if((sal.getComida()== null)&&(sal.getContadorComida()<=3)){
 					generarComida(sal);
+					sal.setContadorComida(sal.getContadorComida()+1);
 					
 				}
+				//comprobar!!!
+				if(sal.getContadorComida() > 3){
+					for (Snake s : sal.getLista().values()){
+						String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", s.getId(),s.getName());
+						broadcast(msg, s.getSala());
+						removeSnake(s);
+					}
+				}
+				else{
+					for (Snake snake : sal.getLista().values()) {
+					    snake.update(sal.getLista().values());
+					   }
+
+					   StringBuilder sb = new StringBuilder();
+					   for (Snake snake : sal.getLista().values()) {
+						  
+					    sb.append(getLocationsJson(snake));
+					    sb.append(',');
+					   }
+					   sb.deleteCharAt(sb.length()-1);
+					   String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
+
+					   broadcast(msg,sal);
+				   }
+				}
 				
-				for (Snake snake : sal.getLista().values()) {
-				    snake.update(sal.getLista().values());
-				   }
-
-				   StringBuilder sb = new StringBuilder();
-				   for (Snake snake : sal.getLista().values()) {
-					  
-				    sb.append(getLocationsJson(snake));
-				    sb.append(',');
-				   }
-				   sb.deleteCharAt(sb.length()-1);
-				   String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
-
-				   broadcast(msg,sal);
-			   }
+				
 				  } catch (Throwable ex) {
 				   System.err.println("Exception processing tick()");
 				   ex.printStackTrace(System.err);
@@ -144,13 +159,10 @@ public class SnakeGame {
 
 	public void broadcast(String message, Sala sala) throws Exception {
 
-		
-		
-		
 		for (Snake snake : sala.getLista().values()) {
 			try {
-				 System.out.println("------------- Serpiente:>"+snake.getName());
-				 System.out.println("-------------> Sala:"+sala.getName());
+				 //System.out.println("------------- Serpiente:>"+snake.getName());
+				 //System.out.println("-------------> Sala:"+sala.getName());
 				//System.out.println("Sending message " + message + " to " + snake.getId());
 				snake.sendMessage(message);
 

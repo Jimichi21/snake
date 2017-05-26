@@ -73,6 +73,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			               System.out.println("Nombre de sala "+nom);
 			               
 			               snakeGame.addSala(sal);
+			               snakeGame.addSnake(s);
 			              
 			               msg="{\"type\": \"Okcrear\",\"data\":\"Ok\"}";
 			               s.sendMessage(msg);
@@ -92,6 +93,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			            sal=snakeGame.getSala(json.getString("Sala"));
 			            
 			           boolean comprobar=  sal.AñadirJugador(s);
+			           snakeGame.addSnake(s);
 			            //Espero a que termine de añadir el jugador, de lo contrario la siguiente instruccion no se sabe que valor tomaria
 			      
 			             
