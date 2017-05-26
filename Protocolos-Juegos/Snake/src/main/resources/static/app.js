@@ -10,6 +10,7 @@ window.onload = function() {
 	  document.getElementById('modal4').style.display = 'none';
 	  document.getElementById('button4').style.display = 'none';
 	  document.getElementById('button5').style.display = 'none';
+	  document.getElementById('button6').style.display = 'none';
 	};
 	
 function actionNombre(){
@@ -23,6 +24,7 @@ function actionNombre(){
 	  document.getElementById('button4').style.display = "none";
 	  document.getElementById('modal2').style.display = "block";
 	  document.getElementById('button5').style.display = "none";
+	  document.getElementById('button6').style.display = "none";
 		  
 }
 function actionCrear(){
@@ -54,7 +56,14 @@ function actionIniciar(){
 	document.getElementById('button5').style.display = "none";
 	game.enviar(aux);
 	
-}		
+}	
+function actionMuro(){
+	Console.log("has pulsado muro");
+	var aux = {"type":"Muro"};	
+	document.getElementById('button6').style.display = 'none';
+	document.getElementById('modal4').style.display = 'none';
+	game.enviar(aux);
+}	
 
 
 	
@@ -338,8 +347,17 @@ class Game {
 		    	   break;
 		    	
 		    	case 'fin':
-		    		Console.log("fin de partida");
+		    		//Console.log("fin de partida");
 		    		document.getElementById('modal4').style.display = "block";
+		    		document.getElementById('button6').style.display = "block";
+		    		break;
+
+		    	case 'muro':
+		    		Console.log("recibido muro");
+		    		for (var m = 0; m < packet.data.length; m++) {
+		        		Console.log("id-->"+packet.data[m].id+"puntuacion-->"+packet.data[m].puntuacion+"nombre-->"+packet.data[m].nombre);
+		       		}
+
 		    	   
 		   }
 		  }

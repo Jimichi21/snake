@@ -101,10 +101,11 @@ public class Snake {
 				snake.getSala().setComida(null);
 			}
 			}
-			if (headCollision || tailCollision) {
+			if (headCollision || tailCollision) {		
 				kill();
-				snake.puntuacion--;
 				if (this.id != snake.id) {
+					this.puntuacion--;
+					snake.puntuacion++;
 					snake.reward();
 				}
 			}
@@ -151,5 +152,6 @@ public class Snake {
 	public int getPuntuacion(){
 		return this.puntuacion;
 	}
+	
 	}
 

@@ -59,7 +59,7 @@ public class SnakeGame {
 		//snakes.remove(Integer.valueOf(snake.getId()));
 		snake.getSala().EliminarJugador(snake);
 		int aux = snake.getSala().contador.availablePermits();
-		if(aux == 4){
+		if(aux == 3){
 			//se elimina la sala
 			removeSala(snake.getSala());
 		}
@@ -68,11 +68,17 @@ public class SnakeGame {
 	}
 	
 	void removeSala(Sala sala) throws Exception{
-		salas.remove(sala.getId());
 		int count = numSalas.decrementAndGet();
 		if(count==0){
 			//cerrar juego
+			String mg = String.format("{\"type\": \"fin\"}");
+			broadcast(mg, sala);
+			sala.getLista().clear();
+			salas.remove(sala.getId());
 			stopTimer();
+		}
+		else{
+			salas.remove(sala.getId());
 		}
 	}
 
@@ -90,11 +96,14 @@ public class SnakeGame {
 				}
 				//comprobar!!!
 				if(sal.getContadorComida() > 3){
-					for (Snake s : sal.getLista().values()){
+					String mg = String.format("{\"type\": \"fin\"}");
+					broadcast(mg, sal);
+					//mostrar por pantalla las mejores posiciones
+					/*for (Snake s : sal.getLista().values()){
 						String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", s.getId(),s.getName());
 						broadcast(msg, s.getSala());
 						removeSnake(s);
-					}
+					}*/
 				}
 				else{
 					for (Snake snake : sal.getLista().values()) {
@@ -158,8 +167,6 @@ public class SnakeGame {
 
 		for (Snake snake : sala.getLista().values()) {
 			try {
-				 //System.out.println("------------- Serpiente:>"+snake.getName());
-				 //System.out.println("-------------> Sala:"+sala.getName());
 				//System.out.println("Sending message " + message + " to " + snake.getId());
 				snake.sendMessage(message);
 
@@ -178,9 +185,6 @@ public class SnakeGame {
 
 	public void stopTimer() {
 		if (scheduler != null) {
-			//mandar mensaje para que salga la puntuacion global del juego
-			//String msg = String.format("{\"type\": \"fin\"}");
-			//broadcast(msg, sala);
 			scheduler.shutdown();
 		}
 	}
