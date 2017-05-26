@@ -15,6 +15,7 @@ public class Sala {
 	String nombre;
 	int idCreador;
 	private Comida comida;
+	Thread bloqueado;
 	
 	boolean pulsadoMuro = false;
 	
@@ -30,7 +31,7 @@ public class Sala {
 		contador.release();
 		
 	}
-	boolean AñadirJugador(Snake jugador) throws Exception{
+	 boolean AñadirJugador(Snake jugador) throws Exception{
 		   
 	     
         if(contador.availablePermits()==0){
@@ -38,10 +39,16 @@ public class Sala {
          jugador.sendMessage(m);
          
         }
-
+        System.out.println("PERMISOS DEL SEMAFORO "+contador.availablePermits());
          if(contador.tryAcquire(5000,TimeUnit.MILLISECONDS)){
           
           snakes.put(jugador.getId(), jugador);
+          System.out.println("----------------------LISTA SALA-----------------");
+          for(Snake n:snakes.values()){
+        	  System.out.println(n.getId());
+        	  
+          }
+          System.out.println("----------------------FIN-----------------");
           return true;
        
          }

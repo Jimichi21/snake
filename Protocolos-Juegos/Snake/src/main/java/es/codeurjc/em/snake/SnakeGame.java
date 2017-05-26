@@ -26,6 +26,9 @@ public class SnakeGame {
 
 	private Lock l=new ReentrantLock();
 	
+	//Este cerrojo controla que no se elimine ninguna snake mientras se está accediendo a una lista que la contenga aunque sea al haber cerrado la conexión(afterconnectionclose)
+	 Lock snakeLock=new ReentrantLock();
+	
 	public void addSnake(Snake snake) {
 		snakes.put(snake.getId(), snake);
 		numSnakes.getAndIncrement();
@@ -59,7 +62,7 @@ public class SnakeGame {
 
 	public void removeSnake(Snake snake) throws Exception {
 
-		
+		snakeLock.lock();
 		//snakes.remove(Integer.valueOf(snake.getId()));
 		snake.getSala().EliminarJugador(snake);
 		int aux = snake.getSala().contador.availablePermits();
@@ -68,7 +71,7 @@ public class SnakeGame {
 			removeSala(snake.getSala());
 		}
 		
-		
+		snakeLock.unlock();
 	}
 	
 	void removeSala(Sala sala) throws Exception{
@@ -76,7 +79,7 @@ public class SnakeGame {
 		if(count==0){
 			//cerrar juego
 			String mg = String.format("{\"type\": \"fin\"}");
-			broadcast(mg, sala);
+			//broadcast(mg, sala);
 			sala.getLista().clear();
 			salas.remove(sala.getId());
 			stopTimer();
@@ -111,11 +114,13 @@ public class SnakeGame {
 					   }
 
 					   StringBuilder sb = new StringBuilder();
+					   
 					   for (Snake snake : sal.getLista().values()) {
-						  
+						
 					    sb.append(getLocationsJson(snake));
 					    sb.append(',');
 					   }
+					  
 					   sb.deleteCharAt(sb.length()-1);
 					   
 					   l.lock();
@@ -166,7 +171,7 @@ public class SnakeGame {
 	
 
 	public void broadcast(String message, Sala sala) throws Exception {
-
+snakeLock.lock();
 		for (Snake snake : sala.getLista().values()) {
 			try {
 				//System.out.println("Sending message " + message + " to " + snake.getId());
@@ -178,6 +183,7 @@ public class SnakeGame {
 				removeSnake(snake);
 			}
 		}
+		snakeLock.unlock();
 	}
 
 	public void startTimer() {

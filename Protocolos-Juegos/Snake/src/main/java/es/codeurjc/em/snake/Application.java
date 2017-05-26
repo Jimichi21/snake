@@ -26,4 +26,4 @@ public class Application implements WebSocketConfigurer {
 		return new SnakeHandler();
 	}
 }
- 
+/*NO DEJA UNIR A MAS DE DOS SI NO SE HA INICIADO LA PARTIDA*/

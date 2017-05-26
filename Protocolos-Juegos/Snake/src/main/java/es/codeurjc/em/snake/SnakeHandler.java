@@ -1,5 +1,7 @@
 package es.codeurjc.em.snake;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.socket.CloseStatus;
@@ -19,25 +21,32 @@ public class SnakeHandler extends TextWebSocketHandler {
 
 	private SnakeGame snakeGame = new SnakeGame();
 	private Lock l=new ReentrantLock();
-    
+	  Executor executor = Executors.newFixedThreadPool(20);
+	 
+	
 	Snake s;
 	Sala sal;
+	
 	Thread añadir;
 	
-	int idSala;
-	int id;
+	
 	String user_name;
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 
-		id = snakeIds.getAndIncrement();
+		
 	}
 
+	
+	
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-
+		
+		
+		
+		l.lock();
 		try {
-
+			int id=snakeIds.getAndIncrement();
 			String payload = message.getPayload();
 			
 			JSONObject json = new JSONObject(payload);
@@ -47,11 +56,9 @@ public class SnakeHandler extends TextWebSocketHandler {
 			switch (tipo){
 			
 			case "user":
-			    
-			     añadir=new Thread(()->{
-			    l.lock();
-			      try {
-			       String msg; //Tendrá el mensaje de confirmación o no de que la sala existe o no
+				 
+		    	Runnable tarea=()->{try {
+				       String msg; //Tendrá el mensaje de confirmación o no de que la sala existe o no
 			             String nombre = json.getString("user");
 			             System.out.println(nombre);
 			             s = new Snake(id, session, nombre);
@@ -62,10 +69,10 @@ public class SnakeHandler extends TextWebSocketHandler {
 			              
 			              //Si no existe la sala la crea
 			              if(!snakeGame.comprobarSala(json.getString("Sala"))){
-			               idSala = salasIds.getAndIncrement();
+			             int idSala = salasIds.getAndIncrement();
 			             String nom = json.getString("Sala");
 			               System.out.println(nom);
-			              
+			               
 			               sal = new Sala(id, nom);
 			               sal.AñadirJugador(s);
 			               sal.idCreador=s.getId();
@@ -97,13 +104,16 @@ public class SnakeHandler extends TextWebSocketHandler {
 			           if(snakeGame.comprobarSala(json.getString("Sala"))){
 			            
 			            sal=snakeGame.getSala(json.getString("Sala"));
-			            
+			             
+			            añadir=Thread.currentThread();
 			           boolean comprobar=  sal.AñadirJugador(s);
 			           snakeGame.addSnake(s);
+			            
 			            //Espero a que termine de añadir el jugador, de lo contrario la siguiente instruccion no se sabe que valor tomaria
 			      
 			             
 			            //Comprueba si hay 4 jugadores comienza el juego
+			            
 			            int aux3 = sal.contador.availablePermits();
 			         if(aux3 == 0){ 
 			          sal.partida_empezada=true;
@@ -116,7 +126,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 		    			   sal.getCreador().sendMessage(msg);
 		    			 snakeGame.unlock();
 			         }
-			            
+			             
 			         
 			            if(comprobar){ //true si se ha añadido el jugador
 			            s.setSala(sal);
@@ -135,10 +145,10 @@ public class SnakeHandler extends TextWebSocketHandler {
 			               return;
 			              }
 			           }}
-			           
+			            
 			             session.getAttributes().put(SNAKE_ATT, s);
 			             snakeGame.addSnake(s);
-
+			             	 
 			             StringBuilder sb = new StringBuilder();
 			             for (Snake snake : sal.getLista().values()) {   
 			              sb.append(String.format("{\"id\": %d, \"color\": \"%s\",\"nombre\":\"%s\"}", snake.getId(), snake.getHexColor(),nombre));
@@ -150,14 +160,12 @@ public class SnakeHandler extends TextWebSocketHandler {
 			             snakeGame.broadcast(msg2, s.getSala());
 			             snakeGame.unlock();
 			            
-			      l.unlock();
+			      
 			      } catch (Exception e) {
 			       // TODO Auto-generated catch block
 			       e.printStackTrace();
-			      }
-			     });
-			     
-			     añadir.start();
+			      }};
+			     executor.execute(tarea);
 			     break;
 				
 			case "direction":
@@ -238,7 +246,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			} catch (Exception e) {
 			System.err.println("Exception processing message " + message.getPayload());
 			e.printStackTrace(System.err);
-		}
+		}l.unlock();
 	}
 
 	@Override
@@ -248,6 +256,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 
 		Snake s = (Snake) session.getAttributes().get(SNAKE_ATT);
 		
+		snakeGame.snakeLock.lock();
 		if(s != null){
 			snakeGame.removeSnake(s);
 
@@ -258,7 +267,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 		    snakeGame.broadcast(msg, sn.getSala());
 		    snakeGame.unlock();
 		}
-	
+		snakeGame.snakeLock.unlock();
 	}
 
 }
