@@ -6,14 +6,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.Collection.*;
+import java.util.Map;
 public class SnakeGame {
 
 	private final static long TICK_DELAY = 100;
 
 	private ConcurrentHashMap<Integer, Snake> snakes = new ConcurrentHashMap<>();
 	
-	private ConcurrentHashMap<Integer, Sala> salas = new ConcurrentHashMap<>();
+	 ConcurrentHashMap<Integer, Sala> salas = new ConcurrentHashMap<>();
 	
 	private AtomicInteger numSnakes = new AtomicInteger();
 	
@@ -21,7 +24,8 @@ public class SnakeGame {
 
 	private ScheduledExecutorService scheduler;
 
-
+	private Lock l=new ReentrantLock();
+	
 	public void addSnake(Snake snake) {
 		snakes.put(snake.getId(), snake);
 		numSnakes.getAndIncrement();
@@ -95,15 +99,11 @@ public class SnakeGame {
 					
 				}
 				//comprobar!!!
-				if(sal.getContadorComida() > 3){
+				if(sal.getContadorComida() > 3 || sal.logSerp()){
+					l.lock();
 					String mg = String.format("{\"type\": \"fin\"}");
 					broadcast(mg, sal);
-					//mostrar por pantalla las mejores posiciones
-					/*for (Snake s : sal.getLista().values()){
-						String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", s.getId(),s.getName());
-						broadcast(msg, s.getSala());
-						removeSnake(s);
-					}*/
+					l.unlock();
 				}
 				else{
 					for (Snake snake : sal.getLista().values()) {
@@ -117,9 +117,11 @@ public class SnakeGame {
 					    sb.append(',');
 					   }
 					   sb.deleteCharAt(sb.length()-1);
+					   
+					   l.lock();
 					   String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
-
 					   broadcast(msg,sal);
+					   l.unlock();
 				   }
 				}
 				
@@ -198,4 +200,34 @@ public class SnakeGame {
 		  broadcast(msg,sal);
 		  
 		 }
+	public ConcurrentHashMap<Integer,Snake> Mejores(){
+		ConcurrentHashMap<Integer, Snake> sol = new ConcurrentHashMap<>();
+		Snake snake = null;
+		//boolean mejor = false;
+		for(Snake sn : snakes.values()){
+			for(Snake s : snakes.values()){
+				if(sn.getPuntuacion() > s.getPuntuacion()){
+					snake = sn;
+				}else{
+					snake = s;
+				}
+			}
+			sol.put(snake.getId(), snake);
+		}
+		return sol;
+		
+	}
+	public int getNumSalas(){
+		return this.numSalas.get();
+	}
+	public void DecSalas(){
+		this.numSalas.getAndDecrement();
+	}
+	public void lock(){
+		this.l.lock();
+	}
+	public void unlock(){
+		this.l.unlock();
+	}
+	
 }

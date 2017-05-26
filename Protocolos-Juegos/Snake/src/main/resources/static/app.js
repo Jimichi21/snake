@@ -357,6 +357,8 @@ class Game {
 		    		for (var m = 0; m < packet.data.length; m++) {
 		        		Console.log("id-->"+packet.data[m].id+"puntuacion-->"+packet.data[m].puntuacion+"nombre-->"+packet.data[m].nombre);
 		       		}
+		       		var aux = {"type":"finPartida"};
+		       		game.enviar(aux);
 
 		    	   
 		   }

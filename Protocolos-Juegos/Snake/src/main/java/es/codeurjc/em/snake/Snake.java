@@ -152,6 +152,8 @@ public class Snake {
 	public int getPuntuacion(){
 		return this.puntuacion;
 	}
-	
+	public int getLenght(){
+		return this.length;
+	}
 	}
 

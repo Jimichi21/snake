@@ -16,6 +16,8 @@ public class Sala {
 	int idCreador;
 	private Comida comida;
 	
+	boolean pulsadoMuro = false;
+	
 	Sala(int id, String nombre){
 		this.id = id;
 		this.nombre = nombre;
@@ -82,6 +84,15 @@ public class Sala {
 	}
 	public void setContadorComida(int contadorComida) {
 		this.contadorComida = contadorComida;
+	}
+	public boolean logSerp(){
+		boolean longit = false;
+		for (Snake snake : snakes.values()){
+			if (snake.getLenght()>7){
+				longit = true;
+			}
+		}
+		return longit;
 	}
 	
 	
