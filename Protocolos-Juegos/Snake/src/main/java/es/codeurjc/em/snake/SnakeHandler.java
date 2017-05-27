@@ -261,7 +261,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 
 		Snake s = (Snake) session.getAttributes().get(SNAKE_ATT);
 		
-		snakeGame.snakeLock.lock();
+		
 		if(s != null){
 			snakeGame.removeSnake(s);
 
@@ -272,7 +272,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 		    snakeGame.broadcast(msg, sn.getSala());
 		    snakeGame.unlock();
 		}
-		snakeGame.snakeLock.unlock();
+		
 	}
 
 }

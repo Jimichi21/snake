@@ -171,7 +171,7 @@ public class SnakeGame {
 	
 
 	public void broadcast(String message, Sala sala) throws Exception {
-snakeLock.lock();
+
 		for (Snake snake : sala.getLista().values()) {
 			try {
 				//System.out.println("Sending message " + message + " to " + snake.getId());
@@ -183,7 +183,7 @@ snakeLock.lock();
 				removeSnake(snake);
 			}
 		}
-		snakeLock.unlock();
+		
 	}
 
 	public void startTimer() {
