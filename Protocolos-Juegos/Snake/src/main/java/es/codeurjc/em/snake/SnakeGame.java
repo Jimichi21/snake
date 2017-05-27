@@ -213,7 +213,7 @@ public class SnakeGame {
 	
 	public ArrayList<Snake> Mejores() {
 		ArrayList <Snake> ordenado = new ArrayList<Snake>(snakes.values());
-		ConcurrentHashMap<Integer, Snake> solucion = new ConcurrentHashMap<>();
+		ArrayList <Snake> sol = new ArrayList<Snake>();
 		Comparator<Snake> comp = new Comparator<Snake>(){
 			@Override
 			public int compare(Snake s1, Snake s2) {
@@ -222,12 +222,8 @@ public class SnakeGame {
 			
 		};
 		Collections.sort(ordenado,comp);
-		/*
-		for(int i = 0; (i < ordenado.size())&&( i<10);i++){		
-			System.out.println(ordenado.get(i).getName());
-			solucion.put(ordenado.get(i).getId(), ordenado.get(i));
-		}*/
-		return ordenado;	
+		sol = (ArrayList<Snake>) ordenado.subList(0, 9);
+		return sol;	
 		
 	}
 	public int getNumSalas(){
