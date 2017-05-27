@@ -22,7 +22,7 @@ public class Snake {
 	private Direction direction;
 	private Sala sala;
 	private int puntuacion = 0;
-
+	private Thread hiloBlock;
 	private final WebSocketSession session;
 	
 	//atributos de la serpiente
@@ -154,6 +154,13 @@ public class Snake {
 	}
 	public int getLenght(){
 		return this.length;
+	}
+	
+	public Thread getHiloBlock() {
+		return hiloBlock;
+	}
+	public void setHiloBlock(Thread hiloBlock) {
+		this.hiloBlock = hiloBlock;
 	}
 	}
 

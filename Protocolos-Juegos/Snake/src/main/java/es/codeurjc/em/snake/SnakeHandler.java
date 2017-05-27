@@ -27,7 +27,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 	Snake s;
 	Sala sal;
 	
-	Thread añadir;
+	
 	
 	
 	String user_name;
@@ -66,15 +66,16 @@ public class SnakeHandler extends TextWebSocketHandler {
 				             String nombre = json.getString("user");
 				             System.out.println(nombre);
 				             s = new Snake(id, session, nombre);
+				             s.setHiloBlock(Thread.currentThread());
 				             System.out.println("Nombre de usuario "+nombre);
 				             
-				             
+				             session.getAttributes().put(SNAKE_ATT, s);
 				             if(json.getString("ComandoSala").equals("Crear")){
 				              
 				              //Si no existe la sala la crea
 				              if(!snakeGame.comprobarSala(json.getString("Sala"))){
-				             int idSala = salasIds.getAndIncrement();
-				             String nom = json.getString("Sala");
+				              int idSala = salasIds.getAndIncrement();
+				              String nom = json.getString("Sala");
 				               System.out.println(nom);
 				               
 				               sal = new Sala(id, nom);
@@ -109,7 +110,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 				            
 				            sal=snakeGame.getSala(json.getString("Sala"));
 				             
-				            añadir=Thread.currentThread();
+				            
 				           boolean comprobar=  sal.AñadirJugador(s);
 				           snakeGame.addSnake(s);
 				            
@@ -141,6 +142,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 				            
 				              }
 				              else{
+				            	  session.getAttributes().remove(SNAKE_ATT, s);
 				               snakeGame.lock();
 				               msg="{\"type\": \"Okunir\",\"data\":\"NotOk\"}";
 				               s.sendMessage(msg);
@@ -150,7 +152,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 				              }
 				           }}
 				            
-				             session.getAttributes().put(SNAKE_ATT, s);
+				            
 				             snakeGame.addSnake(s);
 				             	 
 				             StringBuilder sb = new StringBuilder();
@@ -187,7 +189,9 @@ public class SnakeHandler extends TextWebSocketHandler {
 				    
 			case "cancelar":
 				   System.out.println("-------------------------------\n---------------------\n cancelar");
-				   añadir.interrupt();
+				   Snake sss = (Snake) session.getAttributes().get(SNAKE_ATT);
+				  Thread añadir=sss.getHiloBlock();
+				  añadir.interrupt();
 				   String ms="{\"type\": \"cancelar\",\"info\": \"Espera cancelada\"}";
 				   snakeGame.lock();
 				   s.sendMessage(ms);
