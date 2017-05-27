@@ -79,16 +79,18 @@ public class SnakeGame {
 	}
 	
 	void removeSala(Sala sala) throws Exception{
-		int count = numSalas.decrementAndGet();
-		if(count==0){
+		int count = numSalas.get();
+		if(count==1){
 			//cerrar juego
+			//String mg = String.format("{\"type\": \"Final\"}");
 			String mg = String.format("{\"type\": \"fin\"}");
-			//broadcast(mg, sala);
+			broadcast(mg, sala);
 			sala.getLista().clear();
-			salas.remove(sala.getId());
+			//salas.remove(sala.getId());
 			stopTimer();
 		}
 		else{
+			numSalas.decrementAndGet();
 			salas.remove(sala.getId());
 		}
 	}
@@ -223,8 +225,13 @@ public class SnakeGame {
 			
 		};
 		Collections.sort(ordenado,comp);
-		sol = (ArrayList<Snake>) ordenado.subList(0, 9);
-		return sol;	
+		if(ordenado.size()>10){
+			sol = (ArrayList<Snake>) ordenado.subList(0, 9);
+			return sol;	
+		}else{
+			return ordenado;
+		}
+		
 		
 	}
 	public int getNumSalas(){

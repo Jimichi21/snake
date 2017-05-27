@@ -348,7 +348,7 @@ class Game {
 		    	   break;
 		    	
 		    	case 'fin':
-		    		//Console.log("fin de partida");
+		    		Console.log("fin de partida");
 		    		document.getElementById('modal4').style.display = "block";
 		    		document.getElementById('button6').style.display = "block";
 		    		break;
@@ -369,6 +369,7 @@ class Game {
 		       		}
 		       		var aux = {"type":"finPartida"};
 		       		game.enviar(aux);
+
 
 		    	   
 		   }
