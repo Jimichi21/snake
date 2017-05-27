@@ -111,6 +111,7 @@ public class SnakeGame {
 					String mg = String.format("{\"type\": \"fin\"}");
 					broadcast(mg, sal);
 					l.unlock();
+					sal.setContadorComida(0);
 				}
 				else{
 					for (Snake snake : sal.getLista().values()) {
@@ -124,7 +125,7 @@ public class SnakeGame {
 					    sb.append(getLocationsJson(snake));
 					    sb.append(',');
 					   }
-					  
+					  if(sb.length()!=0)
 					   sb.deleteCharAt(sb.length()-1);
 					   
 					   l.lock();
