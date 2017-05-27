@@ -257,7 +257,7 @@ class Game {
 			Console.log('Info: Press an arrow key to begin.');
 			
 			
-			
+			 
 			
 			//enviamos el usuario al servidor
 			var aux = {"type": "user", "user": user, "ComandoSala":comandoSala,"Sala":sala};

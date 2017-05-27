@@ -280,7 +280,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 					snakeGame.removeSnake(snk);
 				}
 				}	
-
+ 
 			System.out.println(payload);
 
 			

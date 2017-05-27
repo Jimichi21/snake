@@ -62,7 +62,7 @@ public class SnakeGame {
 	
 	public Collection<Snake> getSnakes() {
 		return snakes.values();
-	}
+	} 
 
 	public void removeSnake(Snake snake) throws Exception {
 

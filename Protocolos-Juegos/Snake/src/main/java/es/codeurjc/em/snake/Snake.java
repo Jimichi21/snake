@@ -54,7 +54,7 @@ public class Snake {
 	//envio de mensajes
 	protected void sendMessage(String msg) throws Exception {
 		this.session.sendMessage(new TextMessage(msg));
-	}
+	} 
 	//movimiento serpiente
 	public synchronized void update(Collection<Snake> snakes) throws Exception {
 
