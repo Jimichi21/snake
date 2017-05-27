@@ -365,7 +365,7 @@ class Game {
 		    	case 'muro':
 		    		Console.log("recibido muro");
 		    		for (var m = 0; m < packet.data.length; m++) {
-		        		Console.log("id-->"+packet.data[m].id+"puntuacion-->"+packet.data[m].puntuacion+"nombre-->"+packet.data[m].nombre);
+		        		Console.log("nombre-->"+packet.data[m].nombre+"puntuacion-->"+packet.data[m].puntuacion);
 		       		}
 		       		var aux = {"type":"finPartida"};
 		       		game.enviar(aux);

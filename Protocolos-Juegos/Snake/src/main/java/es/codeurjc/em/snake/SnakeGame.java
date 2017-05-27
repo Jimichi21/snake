@@ -1,5 +1,7 @@
 package es.codeurjc.em.snake;
 
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -9,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.Collection.*;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 public class SnakeGame {
 
@@ -206,21 +210,24 @@ public class SnakeGame {
 		  broadcast(msg,sal);
 		  
 		 }
-	public ConcurrentHashMap<Integer,Snake> Mejores(){
-		ConcurrentHashMap<Integer, Snake> sol = new ConcurrentHashMap<>();
-		Snake snake = null;
-		//boolean mejor = false;
-		for(Snake sn : snakes.values()){
-			for(Snake s : snakes.values()){
-				if(sn.getPuntuacion() > s.getPuntuacion()){
-					snake = sn;
-				}else{
-					snake = s;
-				}
+	
+	public ArrayList<Snake> Mejores() {
+		ArrayList <Snake> ordenado = new ArrayList<Snake>(snakes.values());
+		ConcurrentHashMap<Integer, Snake> solucion = new ConcurrentHashMap<>();
+		Comparator<Snake> comp = new Comparator<Snake>(){
+			@Override
+			public int compare(Snake s1, Snake s2) {
+				return new Integer(s2.getPuntuacion()).compareTo(new Integer(s1.getPuntuacion()));				
 			}
-			sol.put(snake.getId(), snake);
-		}
-		return sol;
+			
+		};
+		Collections.sort(ordenado,comp);
+		/*
+		for(int i = 0; (i < ordenado.size())&&( i<10);i++){		
+			System.out.println(ordenado.get(i).getName());
+			solucion.put(ordenado.get(i).getId(), ordenado.get(i));
+		}*/
+		return ordenado;	
 		
 	}
 	public int getNumSalas(){

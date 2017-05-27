@@ -230,7 +230,12 @@ public class SnakeHandler extends TextWebSocketHandler {
 				if((snakeGame.getNumSalas() == 1)&&(snake.getSala().getPulsadoMuro() == false)){
 					StringBuilder sb = new StringBuilder();
 					
-					for (Snake sm : snakeGame.getSnakes()) {   
+					
+					/*
+					 * 
+					 * //tiene que recorrer los mejores!!
+					 */
+					for (Snake sm : snakeGame.Mejores()) {   
 						sb.append(String.format("{\"id\": %d, \"puntuacion\": \"%d\",\"nombre\":\"%s\"}", sm.getId(), sm.getPuntuacion(),sm.getName()));
 						sb.append(',');
 					}
