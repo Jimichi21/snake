@@ -243,9 +243,9 @@ public class SnakeHandler extends TextWebSocketHandler {
 					sb.deleteCharAt(sb.length()-1);
 					String msg2 = String.format("{\"type\": \"muro\",\"data\":[%s]}", sb.toString());
 					System.out.println(msg2);
-					for(Sala sal : snakeGame.salas.values()){
+					for(Snake sna : snakeGame.getSnakes()){
 						snakeGame.lock();
-						snakeGame.broadcast(msg2, sal);
+						sna.sendMessage(msg2);	
 						snakeGame.unlock();
 					}
 					
@@ -277,7 +277,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 					snakeGame.lock();
 					snakeGame.broadcast(msg, snk.getSala());
 					snakeGame.unlock();
-					snakeGame.removeSnake(snk);
+					snakeGame.getSnakes().clear();
 				}
 				}	
 
@@ -299,12 +299,13 @@ public class SnakeHandler extends TextWebSocketHandler {
 		
 		
 		if(s != null){
-			snakeGame.removeSnake(s);
-
+			//snakeGame.removeSnake(s);
+			//snakeGame.getSnakes().remove(s);
+			snakeGame.lock();
 			String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", s.getId(),s.getName());
 			System.out.println("-------------------------------->"+s.getId());
 			Snake sn=(Snake) session.getAttributes().get(SNAKE_ATT);
-			snakeGame.lock();
+			
 		    snakeGame.broadcast(msg, sn.getSala());
 		    snakeGame.unlock();
 		}

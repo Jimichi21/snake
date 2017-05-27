@@ -72,26 +72,33 @@ public class SnakeGame {
 		int aux = snake.getSala().contador.availablePermits();
 		if(aux == 3){
 			//se elimina la sala
-			removeSala(snake.getSala());
+			snake.getSala().getLista().clear();
+			if(snake.getSala() != null){
+				removeSala(snake.getSala());
+			}
+			
 		}
 		
 		snakeLock.unlock();
 	}
 	
-	void removeSala(Sala sala) throws Exception{
+	void removeSala(Sala sala) throws Exception{	
+		salas.remove(sala.getId());
+		numSalas.decrementAndGet();
 		int count = numSalas.get();
-		if(count==1){
+		if(count==0){
 			//cerrar juego
 			//String mg = String.format("{\"type\": \"Final\"}");
 			String mg = String.format("{\"type\": \"fin\"}");
-			broadcast(mg, sala);
-			sala.getLista().clear();
+			for(Snake s : snakes.values()){
+				snakeLock.lock();
+				s.sendMessage(mg);	
+				snakeLock.unlock();
+			}
+			//broadcast(mg, sala);
+			//sala.getLista().clear();
 			//salas.remove(sala.getId());
-			stopTimer();
-		}
-		else{
-			numSalas.decrementAndGet();
-			salas.remove(sala.getId());
+			//stopTimer();
 		}
 	}
 

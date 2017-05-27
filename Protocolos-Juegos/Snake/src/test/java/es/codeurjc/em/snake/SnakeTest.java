@@ -10,20 +10,20 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.concurrent.*;
 public class SnakeTest {
-
+	 volatile int i=0;
  @BeforeClass
  public static void startServer(){
   Application.main(new String[]{ "--server.port=8080" });
  }
   
- @Test
+ /*@Test
  public void testConnection() throws Exception {
   
   WebSocketClient wsc = new WebSocketClient();
   wsc.connect("ws://127.0.0.1:8080/snake");
         wsc.disconnect();  
  }
- volatile int i=0;
+
  @Test
  public void testJoin() throws Exception {
   
@@ -97,7 +97,7 @@ if(msg.contains("update")){
   }
   
  }
- 
+ */
  @Test
  public void testIniciar() throws Exception {
  
@@ -156,7 +156,7 @@ if(msg.contains("update")){
 	           }
 	     wsc.sendMessage(msg);
 	     
-	     Thread.sleep(1500);
+	     Thread.sleep(3000);
 	     wsc.disconnect(); 
 	     
 	     }catch(Exception e){
@@ -176,7 +176,7 @@ if(msg.contains("update")){
 	   
 	    
 	    
-	    Thread.sleep(2500);
+	    Thread.sleep(5000);
 	    
 	    
 	  	  
