@@ -62,18 +62,12 @@ public class SnakeGame {
 	
 	public Collection<Snake> getSnakes() {
 		return snakes.values();
-	} 
+	}
 
 	public void removeSnake(Snake snake) throws Exception {
 
 		snakeLock.lock();
-		//snakes.remove(Integer.valueOf(snake.getId()));
 		snake.getSala().EliminarJugador(snake);
-		int aux = snake.getSala().contador.availablePermits();
-		if(aux == 3){
-			//se elimina la sala
-			removeSala(snake.getSala());
-		}
 		
 		snakeLock.unlock();
 	}
@@ -81,12 +75,21 @@ public class SnakeGame {
 	void removeSala(Sala sala) throws Exception{
 		int count = numSalas.decrementAndGet();
 		if(count==0){
-			//cerrar juego
+		//cerrar juego
 			String mg = String.format("{\"type\": \"fin\"}");
-			//broadcast(mg, sala);
-			sala.getLista().clear();
+			broadcast(mg, sala);
 			salas.remove(sala.getId());
-			stopTimer();
+			sala.getLista().clear();
+			
+		
+			 for (Snake snk : getSnakes()){
+			     String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", snk.getId(),snk.getName());
+			     lock();
+			     broadcast(msg, snk.getSala());
+			     unlock();
+			     removeSnake(snk);
+			    }
+			
 		}
 		else{
 			salas.remove(sala.getId());
@@ -113,6 +116,8 @@ public class SnakeGame {
 					l.unlock();
 				}
 				else{
+					
+					if(!sal.getLista().isEmpty()){
 					for (Snake snake : sal.getLista().values()) {
 					    snake.update(sal.getLista().values());
 					   }
@@ -120,7 +125,7 @@ public class SnakeGame {
 					   StringBuilder sb = new StringBuilder();
 					   
 					   for (Snake snake : sal.getLista().values()) {
-						
+						//if(snake!=null)
 					    sb.append(getLocationsJson(snake));
 					    sb.append(',');
 					   }
@@ -134,7 +139,7 @@ public class SnakeGame {
 				   }
 				}
 				
-				
+			}
 				  } catch (Throwable ex) {
 				   System.err.println("Exception processing tick()");
 				   ex.printStackTrace(System.err);

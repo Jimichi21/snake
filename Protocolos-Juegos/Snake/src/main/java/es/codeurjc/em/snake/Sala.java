@@ -24,12 +24,12 @@ public class Sala {
 		this.nombre = nombre;
 		contador=new Semaphore(4, true);
 		setComida(null);
-	} 
+	}
 	void EliminarJugador(Snake jugador){
-		
-		snakes.remove(Integer.valueOf(jugador.getId()));
-		contador.release();
-		
+		if(jugador != null){
+			snakes.remove(Integer.valueOf(jugador.getId()));
+			contador.release();
+		}
 	}
 	 boolean AñadirJugador(Snake jugador) throws Exception{
 		   

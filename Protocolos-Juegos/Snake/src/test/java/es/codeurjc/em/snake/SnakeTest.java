@@ -1,6 +1,7 @@
 package es.codeurjc.em.snake;
 
 import static org.junit.Assert.assertTrue;
+import java.util.concurrent.CyclicBarrier;
 
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -10,13 +11,13 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.concurrent.*;
 public class SnakeTest {
-  volatile int i=0;
+  volatile int i;
  @BeforeClass
  public static void startServer(){
   Application.main(new String[]{ "--server.port=8080" });
  }
   
- /*@Test
+ @Test
  public void testConnection() throws Exception {
   
   WebSocketClient wsc = new WebSocketClient();
@@ -26,7 +27,7 @@ public class SnakeTest {
 
  @Test
  public void testJoin() throws Exception {
-  
+  i=0;
   
     Executor executor = Executors.newFixedThreadPool(4);
   
@@ -52,7 +53,7 @@ if(msg.contains("update")){
    wsc.connect("ws://127.0.0.1:8080/snake");
    
           
-          System.out.println("Connected");
+   System.out.println("Connected");
    
    String msg;
    System.out.println("Nombre "+Thread.currentThread().getName());
@@ -97,11 +98,11 @@ if(msg.contains("update")){
   }
   
  }
- */
+ 
  @Test
  public void testIniciar() throws Exception {
  
-  
+  i=0;
   
      Executor executor = Executors.newFixedThreadPool(2);
      
@@ -156,7 +157,7 @@ if(msg.contains("update")){
             }
       wsc.sendMessage(msg);
       
-      Thread.sleep(3000);
+      Thread.sleep(5000);
       wsc.disconnect(); 
       
       }catch(Exception e){
@@ -167,16 +168,16 @@ if(msg.contains("update")){
      
      
      
-      
+     
      
      
      executor.execute(tarea);
      Thread.sleep(500);
      executor.execute(tarea);
+    
      
      
-     
-     Thread.sleep(5000);
+     Thread.sleep(7000);
      
      
       
@@ -194,4 +195,133 @@ if(msg.contains("update")){
   
  
 }
+ @Test
+ public void testFin() throws Exception{
+	 i=0;
+	 
+	 
+	  Executor executor = Executors.newFixedThreadPool(2);
+	  
+	  AtomicReferenceArray<String> firstMsg = new AtomicReferenceArray<String>(3);
+	  
+	  
+	  Runnable tareaCreador=()->{
+
+	int id=Character.getNumericValue(Thread.currentThread().getName().charAt(Thread.currentThread().getName().length()-1)-1);
+	   
+	   
+	WebSocketClient wsc = new WebSocketClient();
+	   
+	wsc.onMessage((session, msg) -> {
+	 
+	 System.out.println("TestMessage: "+msg);
+	if(msg.contains("leave")){
+	 firstMsg.compareAndSet(2,null, msg);
+	}
+	if(msg.contains("update")){
+		 firstMsg.compareAndSet(id,null, msg);
+		}
+	
+	
+	if(msg.contains("iniciar")){
+
+	     try {
+	   wsc.sendMessage("{\"type\":\"Init\"}");
+	  } catch (IOException e) {
+	   // TODO Auto-generated catch block
+	   e.printStackTrace();
+	  }
+	}
+	
+	});
+
+	   try{
+	   wsc.connect("ws://127.0.0.1:8080/snake");
+	   
+	          
+	   System.out.println("Connected");
+	   
+	   String msg;
+	   System.out.println("Nombre "+Thread.currentThread().getName());
+	   
+	       msg=String.format("{\"type\": \"user\", \"user\": \"%s\", \"ComandoSala\":\"Crear\",\"Sala\":\"1\"}", "Creador");
+	         
+	        
+	   wsc.sendMessage(msg);
+	   
+	   Thread.sleep(6500);
+	   wsc.disconnect(); 
+	   
+	   }catch(Exception e){
+	    e.printStackTrace();
+	   }
+	  
+	  };
+	  
+	  Runnable tareaUnir=()->{
+
+			int id=Character.getNumericValue(Thread.currentThread().getName().charAt(Thread.currentThread().getName().length()-1)-1);
+			   
+			   
+			WebSocketClient wsc = new WebSocketClient();
+			   
+			wsc.onMessage((session, msg) -> {
+			 
+			 System.out.println("TestMessage: "+msg);
+			if(msg.contains("update")){
+			 firstMsg.compareAndSet(id,null, msg);
+			}
+			});
+
+			   try{
+			   wsc.connect("ws://127.0.0.1:8080/snake");
+			   
+			          
+			   System.out.println("Connected");
+			   
+			   String msg;
+			   System.out.println("Nombre "+Thread.currentThread().getName());
+			  
+			       
+			         msg=String.format("{\"type\": \"user\", \"user\": \"%s\", \"ComandoSala\":\"Unir\",\"Sala\":\"1\"}", "Union");
+			         
+			   wsc.sendMessage(msg);
+			   
+			   Thread.sleep(6000);
+			   wsc.disconnect(); 
+			   
+			   }catch(Exception e){
+			    e.printStackTrace();
+			   }
+			  
+			  };
+	  
+	  
+	  
+	  
+	  executor.execute(tareaCreador);
+	  Thread.sleep(500);
+	  executor.execute(tareaUnir);
+	
+
+	  
+	  
+	  Thread.sleep(8000);
+	  
+	  String msg=firstMsg.get(0);
+	   assertTrue("The first message should contain 'update', but it is "+msg, msg.contains("update"));
+	   msg=firstMsg.get(1);
+	   assertTrue("The first message should contain 'update', but it is "+msg, msg.contains("update"));
+	   msg=firstMsg.get(2);
+	   assertTrue("The first message should contain 'leave', but it is "+msg, msg.contains("leave"));
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+ }
+ 
 }

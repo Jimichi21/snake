@@ -280,7 +280,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 					snakeGame.removeSnake(snk);
 				}
 				}	
- 
+
 			System.out.println(payload);
 
 			
@@ -299,16 +299,32 @@ public class SnakeHandler extends TextWebSocketHandler {
 		
 		
 		if(s != null){
-			snakeGame.removeSnake(s); 
-
+			snakeGame.removeSnake(s);
+			snakeIds.getAndDecrement();
 			String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", s.getId(),s.getName());
 			System.out.println("-------------------------------->"+s.getId());
-			Snake sn=(Snake) session.getAttributes().get(SNAKE_ATT);
 			snakeGame.lock();
-		    snakeGame.broadcast(msg, sn.getSala());
+		    snakeGame.broadcast(msg, s.getSala());
 		    snakeGame.unlock();
+		    
+		    int aux = s.getSala().contador.availablePermits();
+			if(aux == 3){
+				for(Snake ss: s.getSala().getLista().values()){
+					
+					
+					ss.getSala().getLista().remove(ss);
+					
+					snakeIds.getAndDecrement();
+				}
+				//se elimina la sala
+				snakeGame.removeSala(s.getSala());
+				salasIds.getAndDecrement();
+			}
+			
+		    
 		}
 		
 	}
 
 }
+
