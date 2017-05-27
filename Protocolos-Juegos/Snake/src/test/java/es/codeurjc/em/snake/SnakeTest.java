@@ -1,6 +1,7 @@
 package es.codeurjc.em.snake;
 
 import static org.junit.Assert.assertTrue;
+import java.util.concurrent.CyclicBarrier;
 
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
@@ -27,7 +28,7 @@ public class SnakeTest {
  @Test
  public void testJoin() throws Exception {
   i=0;
-  
+  CyclicBarrier c=new CyclicBarrier(5);
     Executor executor = Executors.newFixedThreadPool(4);
   
   AtomicReferenceArray<String> firstMsg = new AtomicReferenceArray<String>(4);
@@ -67,6 +68,7 @@ if(msg.contains("update")){
    
    Thread.sleep(1500);
    wsc.disconnect(); 
+   c.await();
    
    }catch(Exception e){
     e.printStackTrace();
@@ -89,7 +91,7 @@ if(msg.contains("update")){
   
   
   Thread.sleep(2500);
-  
+  c.await();
   for(int h=0;h<4;h++){
    
    String msg=firstMsg.get(h);
@@ -102,7 +104,7 @@ if(msg.contains("update")){
  public void testIniciar() throws Exception {
  
   i=0;
-  
+  CyclicBarrier c=new CyclicBarrier(3);
      Executor executor = Executors.newFixedThreadPool(2);
      
      AtomicReferenceArray<String> firstMsg = new AtomicReferenceArray<String>(3);
@@ -158,7 +160,7 @@ if(msg.contains("update")){
       
       Thread.sleep(5000);
       wsc.disconnect(); 
-      
+      c.await();
       }catch(Exception e){
        e.printStackTrace();
       }
@@ -177,7 +179,7 @@ if(msg.contains("update")){
      
      
      Thread.sleep(7000);
-     
+     c.await();
      
       
       String msg=firstMsg.get(0);
@@ -198,7 +200,7 @@ if(msg.contains("update")){
  public void testFin() throws Exception{
 	 i=0;
 	 
-	 
+	 CyclicBarrier c=new CyclicBarrier(3);
 	  Executor executor = Executors.newFixedThreadPool(2);
 	  
 	  AtomicReferenceArray<String> firstMsg = new AtomicReferenceArray<String>(3);
@@ -250,7 +252,7 @@ if(msg.contains("update")){
 	   
 	   Thread.sleep(6500);
 	   wsc.disconnect(); 
-	   
+	   c.await();
 	   }catch(Exception e){
 	    e.printStackTrace();
 	   }
@@ -286,9 +288,9 @@ if(msg.contains("update")){
 			         
 			   wsc.sendMessage(msg);
 			   
-			   Thread.sleep(4500);
+			   Thread.sleep(4000);
 			   wsc.disconnect(); 
-			   
+			   c.await();
 			   }catch(Exception e){
 			    e.printStackTrace();
 			   }
@@ -306,7 +308,7 @@ if(msg.contains("update")){
 	  
 	  
 	  Thread.sleep(8000);
-	  
+	  c.await();
 	  String msg=firstMsg.get(0);
 	   assertTrue("The first message should contain 'update', but it is "+msg, msg.contains("update"));
 	   msg=firstMsg.get(1);

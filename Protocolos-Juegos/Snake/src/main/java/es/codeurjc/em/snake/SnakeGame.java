@@ -18,13 +18,13 @@ public class SnakeGame {
 
 	private final static long TICK_DELAY = 100;
 
-	private ConcurrentHashMap<Integer, Snake> snakes = new ConcurrentHashMap<>();
+	private  ConcurrentHashMap<Integer, Snake> snakes = new ConcurrentHashMap<>();
 	
 	 ConcurrentHashMap<Integer, Sala> salas = new ConcurrentHashMap<>();
 	
 	private AtomicInteger numSnakes = new AtomicInteger();
 	
-	private AtomicInteger numSalas = new AtomicInteger();
+	private volatile AtomicInteger numSalas = new AtomicInteger();
 
 	private ScheduledExecutorService scheduler;
 
@@ -110,10 +110,10 @@ public class SnakeGame {
 				}
 				//comprobar!!!
 				if(sal.getContadorComida() > 3 || sal.logSerp()){
-					l.lock();
+					//l.lock();
 					String mg = String.format("{\"type\": \"fin\"}");
 					broadcast(mg, sal);
-					l.unlock();
+					//l.unlock();
 				}
 				else{
 					
@@ -132,10 +132,10 @@ public class SnakeGame {
 					  
 					   sb.deleteCharAt(sb.length()-1);
 					   
-					   l.lock();
+					   //l.lock();
 					   String msg = String.format("{\"type\": \"update\", \"data\" : [%s]}", sb.toString());
 					   broadcast(msg,sal);
-					   l.unlock();
+					   //l.unlock();
 				   }
 				}
 				
@@ -179,7 +179,7 @@ public class SnakeGame {
 		}
 	
 
-	public void broadcast(String message, Sala sala) throws Exception {
+	public synchronized void broadcast(String message, Sala sala) throws Exception {
 
 		for (Snake snake : sala.getLista().values()) {
 			try {

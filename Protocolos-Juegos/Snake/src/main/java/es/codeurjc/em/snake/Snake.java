@@ -31,6 +31,7 @@ public class Snake {
 		this.id = id;
 		this.session = session;
 		this.hexColor = SnakeUtils.getRandomHexColor();
+		
 		resetState();
 	}
 	//restaura los valores de la serpiente (todo a 0)
@@ -53,6 +54,8 @@ public class Snake {
 	
 	//envio de mensajes
 	synchronized protected void sendMessage(String msg) throws Exception {
+		
+		if(this.session.isOpen())
 		this.session.sendMessage(new TextMessage(msg));
 	}
 	//movimiento serpiente

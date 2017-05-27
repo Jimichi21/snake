@@ -93,17 +93,17 @@ public class SnakeHandler extends TextWebSocketHandler {
 				               snakeGame.addSala(sal);
 				               snakeGame.addSnake(s);
 				              
-				               snakeGame.lock();
+				               //snakeGame.lock();
 				               msg="{\"type\": \"Okcrear\",\"data\":\"Ok\"}";
 				               s.sendMessage(msg);
-				               snakeGame.unlock();
+				               //snakeGame.unlock();
 				              
 				             }else{
 				              
-				              snakeGame.lock();
+				              //snakeGame.lock();
 				              msg="{\"type\": \"Okcrear\",\"data\":\"NotOk\"}";
 				              s.sendMessage(msg);
-				              snakeGame.unlock();
+				              //snakeGame.unlock();
 				              return;
 				              }
 				             //si el comando es unir:
@@ -125,46 +125,46 @@ public class SnakeHandler extends TextWebSocketHandler {
 				            
 				            int aux3 = sal.contador.availablePermits();
 				         if(aux3 == 0){ 
-				        	 snakeGame.lock();
+				        	 //snakeGame.lock();
 				        	 msg="{\"type\": \"empezar\"}";
 				        	 sal.getCreador().sendMessage(msg);
-				        	 snakeGame.unlock();
+				        	 //snakeGame.unlock();
 				        	 sal.partida_empezada=true;
 				        	 
 				         }
 				         if(aux3>=2 && (!sal.partida_empezada)){
-				        	 snakeGame.lock();
+				        	 //snakeGame.lock();
 				        	 msg="{\"type\": \"iniciar\"}";
 			    			   System.out.println("----------------->"+msg);  
 			    			   sal.getCreador().sendMessage(msg);
-			    			 snakeGame.unlock();
+			    			 //snakeGame.unlock();
 				         }
 				             
 				         
 				            if(comprobar){ //true si se ha añadido el jugador
 				            s.setSala(sal);
-				            snakeGame.lock();
+				            //snakeGame.lock();
 				            msg="{\"type\": \"Okunir\",\"data\":\"Ok\"}";
 				            s.sendMessage(msg);
-				            snakeGame.unlock();
+				            //snakeGame.unlock();
 				            
 				              }
 				              else{
 				            	  session.getAttributes().remove(SNAKE_ATT, s);
-				               snakeGame.lock();
+				               //snakeGame.lock();
 				               msg="{\"type\": \"Okunir\",\"data\":\"NotOk\"}";
 				               s.sendMessage(msg);
-				               snakeGame.unlock();
+				               //snakeGame.unlock();
 				               
 				               return;
 				              }
 				           }
 				           else{
 				            	  session.getAttributes().remove(SNAKE_ATT, s);
-				               snakeGame.lock();
+				               //snakeGame.lock();
 				               msg="{\"type\": \"Okunir\",\"data\":\"NotOk\"}";
 				               s.sendMessage(msg);
-				               snakeGame.unlock();
+				               //snakeGame.unlock();
 				               
 				               return;
 				              }}
@@ -179,9 +179,9 @@ public class SnakeHandler extends TextWebSocketHandler {
 				             }
 				             sb.deleteCharAt(sb.length()-1);
 				             String msg2 = String.format("{\"type\": \"join\",\"data\":[%s]}", sb.toString());
-				             snakeGame.lock();
+				             //snakeGame.lock();
 				             snakeGame.broadcast(msg2, s.getSala());
-				             snakeGame.unlock();
+				             //snakeGame.unlock();
 				             l.unlock();
 				      
 				      } catch (Exception e) {
@@ -210,9 +210,9 @@ public class SnakeHandler extends TextWebSocketHandler {
 				  Thread añadir=sss.getHiloBlock();
 				  añadir.interrupt();
 				   String ms="{\"type\": \"cancelar\",\"info\": \"Espera cancelada\"}";
-				   snakeGame.lock();
+				   //snakeGame.lock();
 				   s.sendMessage(ms);
-				   snakeGame.unlock();
+				   //snakeGame.unlock();
 				   break;
 
 	    	
@@ -244,9 +244,9 @@ public class SnakeHandler extends TextWebSocketHandler {
 					String msg2 = String.format("{\"type\": \"muro\",\"data\":[%s]}", sb.toString());
 					System.out.println(msg2);
 					for(Sala sal : snakeGame.salas.values()){
-						snakeGame.lock();
+						//snakeGame.lock();
 						snakeGame.broadcast(msg2, sal);
-						snakeGame.unlock();
+						//snakeGame.unlock();
 					}
 					
 					
@@ -255,7 +255,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 						
 						//Sala sal = (Sala) session.getAttributes().get("sala");
 						System.out.println("quedan partidas en juego");
-						 snakeGame.lock();
+						 //snakeGame.lock();
 			        	 String msn="{\"type\": \"partidasEnJuego\"}";
 			        	 snake.sendMessage(msn);
 			        	 System.out.println("pulsado muro = "+snake.getSala().getPulsadoMuro());
@@ -264,7 +264,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 			        		  snake.getSala().muro();
 			        		  snakeGame.DecSalas();
 			        	  }
-			        	 snakeGame.unlock();
+			        	 //snakeGame.unlock();
 			        	  	
 						//enviar mensaje para mostrar pantallas de espera
 					}
@@ -274,9 +274,9 @@ public class SnakeHandler extends TextWebSocketHandler {
 			case "finPartida":
 				for (Snake snk : snakeGame.getSnakes()){
 					String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", snk.getId(),snk.getName());
-					snakeGame.lock();
+					//snakeGame.lock();
 					snakeGame.broadcast(msg, snk.getSala());
-					snakeGame.unlock();
+					//snakeGame.unlock();
 					snakeGame.removeSnake(snk);
 				}
 				}	
@@ -299,13 +299,15 @@ public class SnakeHandler extends TextWebSocketHandler {
 		
 		
 		if(s != null){
-			snakeGame.removeSnake(s);
-			snakeIds.getAndDecrement();
 			String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", s.getId(),s.getName());
 			System.out.println("-------------------------------->"+s.getId());
-			snakeGame.lock();
+			//snakeGame.lock();
 		    snakeGame.broadcast(msg, s.getSala());
-		    snakeGame.unlock();
+		   //snakeGame.unlock();
+		    
+		    snakeGame.removeSnake(s);
+			snakeIds.getAndDecrement();
+			
 		    
 		    int aux = s.getSala().contador.availablePermits();
 			if(aux == 3){

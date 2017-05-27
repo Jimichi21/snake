@@ -6,8 +6,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 public class Sala {
 	int id; //identificador de la sala
-	private ConcurrentHashMap<Integer, Snake> snakes = new ConcurrentHashMap<>();
-	private ConcurrentHashMap<Integer, Snake> snakesEspera = new ConcurrentHashMap<>();
+	private  ConcurrentHashMap<Integer, Snake> snakes = new ConcurrentHashMap<>();
+	private  ConcurrentHashMap<Integer, Snake> snakesEspera = new ConcurrentHashMap<>();
 	 Semaphore contador;
 	boolean partida_empezada=false;
 	private int contadorComida = 0;
