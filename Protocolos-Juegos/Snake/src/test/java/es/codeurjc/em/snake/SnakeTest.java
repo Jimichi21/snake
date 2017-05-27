@@ -68,7 +68,7 @@ wsc.onMessage((session, msg) -> {
 		
 		
 		executor.execute(tarea);
-	//Thread.sleep(500);
+	Thread.sleep(500);
 		executor.execute(tarea);
 		//Thread.sleep(1000);
 		executor.execute(tarea);

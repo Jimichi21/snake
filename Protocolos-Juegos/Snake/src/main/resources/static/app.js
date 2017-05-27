@@ -317,6 +317,7 @@ class Game {
 		       break;
 		       
 		      case 'Okunir': 
+		    	  Console.log(packet.data);
          		if(packet.data==='Ok'){
           
          		document.getElementById('modal2').style.display = "none";
