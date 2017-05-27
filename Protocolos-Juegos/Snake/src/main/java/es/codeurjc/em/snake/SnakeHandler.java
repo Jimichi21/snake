@@ -299,7 +299,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 		
 		
 		if(s != null){
-			snakeGame.removeSnake(s);
+			snakeGame.removeSnake(s); 
 
 			String msg = String.format("{\"type\": \"leave\", \"id\": %d,\"nombre\":\"%s\"}", s.getId(),s.getName());
 			System.out.println("-------------------------------->"+s.getId());
