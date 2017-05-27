@@ -74,7 +74,11 @@ public class SnakeHandler extends TextWebSocketHandler {
 				              
 				              //Si no existe la sala la crea
 				              if(!snakeGame.comprobarSala(json.getString("Sala"))){
-				              int idSala = salasIds.getAndIncrement();
+				              
+				            	  if(snakeGame.getNumSalas() == 0){
+				            		  snakeGame.startTimer();
+				            	  }
+				            	  int idSala = salasIds.getAndIncrement();
 				              String nom = json.getString("Sala");
 				               System.out.println(nom);
 				               
@@ -121,8 +125,12 @@ public class SnakeHandler extends TextWebSocketHandler {
 				            
 				            int aux3 = sal.contador.availablePermits();
 				         if(aux3 == 0){ 
-				          sal.partida_empezada=true;
-				          snakeGame.startTimer();
+				        	 snakeGame.lock();
+				        	 msg="{\"type\": \"empezar\"}";
+				        	 sal.getCreador().sendMessage(msg);
+				        	 snakeGame.unlock();
+				        	 sal.partida_empezada=true;
+				        	 
 				         }
 				         if(aux3>=2 && (!sal.partida_empezada)){
 				        	 snakeGame.lock();
@@ -150,7 +158,16 @@ public class SnakeHandler extends TextWebSocketHandler {
 				               
 				               return;
 				              }
-				           }}
+				           }
+				           else{
+				            	  session.getAttributes().remove(SNAKE_ATT, s);
+				               snakeGame.lock();
+				               msg="{\"type\": \"Okunir\",\"data\":\"NotOk\"}";
+				               s.sendMessage(msg);
+				               snakeGame.unlock();
+				               
+				               return;
+				              }}
 				            
 				            
 				             snakeGame.addSnake(s);
@@ -203,7 +220,7 @@ public class SnakeHandler extends TextWebSocketHandler {
 				System.out.println("recibido Init");
 				Snake s = (Snake) session.getAttributes().get(SNAKE_ATT);
 				s.getSala().partida_empezada=true;
- 			   	snakeGame.startTimer();
+ 			   	//snakeGame.startTimer();
  			   	break;
  			
 			case "Muro":
@@ -230,6 +247,10 @@ public class SnakeHandler extends TextWebSocketHandler {
 					
 				}else{
 						System.out.println("quedan partidas en juego");
+						 snakeGame.lock();
+			        	 String msn="{\"type\": \"partidasEnJuego\"}";
+			        	 snakeGame.broadcast(msn, sal);
+			        	 snakeGame.unlock();
 						if(!sm.getSala().pulsadoMuro){
 							sm.getSala().pulsadoMuro = true;
 							snakeGame.DecSalas();

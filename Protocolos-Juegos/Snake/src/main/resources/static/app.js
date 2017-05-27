@@ -352,6 +352,15 @@ class Game {
 		    		document.getElementById('modal4').style.display = "block";
 		    		document.getElementById('button6').style.display = "block";
 		    		break;
+		    	case 'empezar':
+		    	 	document.getElementById('button5').style.display = "none";
+		       		document.getElementById('modal3').style.display = "none";
+		       		break;
+		       	case 'partidasEnJuego':
+		       		Console.log("hay partidas en juego. Espere por favor");
+		       		document.getElementById('modal4').style.display = "none";
+		    		document.getElementById('button6').style.display = "none";
+
 
 		    	case 'muro':
 		    		Console.log("recibido muro");
