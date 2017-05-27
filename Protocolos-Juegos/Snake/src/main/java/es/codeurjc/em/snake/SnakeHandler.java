@@ -224,13 +224,14 @@ public class SnakeHandler extends TextWebSocketHandler {
  			   	break;
  			
 			case "Muro":
-				Snake sm = (Snake) session.getAttributes().get(SNAKE_ATT);
+				//Snake sm = (Snake) session.getAttributes().get(SNAKE_ATT);
+				Snake snake = (Snake) session.getAttributes().get(SNAKE_ATT);
 				System.out.println("numero de salas:"+snakeGame.getNumSalas());
-				if(snakeGame.getNumSalas() == 1){
+				if((snakeGame.getNumSalas() == 1)&&(snake.getSala().getPulsadoMuro() == false)){
 					StringBuilder sb = new StringBuilder();
 					
-					for (Snake snake : snakeGame.getSnakes()) {   
-						sb.append(String.format("{\"id\": %d, \"puntuacion\": \"%d\",\"nombre\":\"%s\"}", snake.getId(), snake.getPuntuacion(),snake.getName()));
+					for (Snake sm : snakeGame.getSnakes()) {   
+						sb.append(String.format("{\"id\": %d, \"puntuacion\": \"%d\",\"nombre\":\"%s\"}", sm.getId(), sm.getPuntuacion(),sm.getName()));
 						sb.append(',');
 					}
 								             
@@ -246,15 +247,20 @@ public class SnakeHandler extends TextWebSocketHandler {
 					
 					
 				}else{
+						
+						//Sala sal = (Sala) session.getAttributes().get("sala");
 						System.out.println("quedan partidas en juego");
 						 snakeGame.lock();
 			        	 String msn="{\"type\": \"partidasEnJuego\"}";
-			        	 snakeGame.broadcast(msn, sal);
+			        	 snake.sendMessage(msn);
+			        	 System.out.println("pulsado muro = "+snake.getSala().getPulsadoMuro());
+			        	  if(snake.getSala().getPulsadoMuro() == false){
+			        		  System.out.println("pulsado muro = "+snake.getSala().getPulsadoMuro());
+			        		  snake.getSala().muro();
+			        		  snakeGame.DecSalas();
+			        	  }
 			        	 snakeGame.unlock();
-						if(!sm.getSala().pulsadoMuro){
-							sm.getSala().pulsadoMuro = true;
-							snakeGame.DecSalas();
-						}
+			        	  	
 						//enviar mensaje para mostrar pantallas de espera
 					}
 				 

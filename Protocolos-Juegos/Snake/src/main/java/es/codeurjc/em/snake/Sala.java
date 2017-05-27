@@ -17,7 +17,7 @@ public class Sala {
 	private Comida comida;
 	Thread bloqueado;
 	
-	boolean pulsadoMuro = false;
+	private boolean pulsadoMuro = false;
 	
 	Sala(int id, String nombre){
 		this.id = id;
@@ -101,6 +101,11 @@ public class Sala {
 		}
 		return longit;
 	}
-	
+	public boolean muro(){
+		return this.pulsadoMuro = true;
+	}
+	public boolean getPulsadoMuro(){
+		return this.pulsadoMuro;
+	}
 	
 }
