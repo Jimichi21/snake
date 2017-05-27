@@ -52,7 +52,7 @@ public class Snake {
 	}
 	
 	//envio de mensajes
-	protected void sendMessage(String msg) throws Exception {
+	synchronized protected void sendMessage(String msg) throws Exception {
 		this.session.sendMessage(new TextMessage(msg));
 	}
 	//movimiento serpiente
